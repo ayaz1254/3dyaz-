@@ -54,7 +54,11 @@ export default async function AdminOrderDetailPage({
           <h2 className="mb-3 text-sm font-semibold text-gray-500 uppercase">Ödeme</h2>
           <p className="text-sm">
             Yöntem:{" "}
-            {order.paymentMethod === "TRANSFER" ? "Havale/EFT" : "Kapıda Ödeme"}
+            {order.paymentMethod === "TRANSFER"
+              ? "Havale/EFT"
+              : order.paymentMethod === "CREDIT_CARD"
+                ? "Kredi Kartı"
+                : "Kapıda Ödeme"}
           </p>
           <p className="text-sm">
             Durum:{" "}
@@ -64,6 +68,11 @@ export default async function AdminOrderDetailPage({
                 ? "Bekliyor"
                 : "İade Edildi"}
           </p>
+          {order.payment?.iyzicoPaymentId && (
+            <p className="text-sm">
+              Iyzico ID: <span className="font-mono text-xs">{order.payment.iyzicoPaymentId}</span>
+            </p>
+          )}
           {order.payment?.transferName && (
             <p className="text-sm">Gönderen: {order.payment.transferName}</p>
           )}

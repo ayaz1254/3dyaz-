@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getCart, getCartTotal, getCartCount, clearCart } from "@/lib/cart";
 
 export default function CheckoutPage() {
@@ -15,7 +15,7 @@ export default function CheckoutPage() {
 
   const [addresses, setAddresses] = useState<any[]>([]);
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"TRANSFER" | "COD">("TRANSFER");
+  const [paymentMethod, setPaymentMethod] = useState<"TRANSFER" | "COD" | "CREDIT_CARD">("TRANSFER");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -24,6 +24,13 @@ export default function CheckoutPage() {
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponError, setCouponError] = useState("");
   const [appliedCode, setAppliedCode] = useState("");
+
+  // Card form state
+  const [cardHolder, setCardHolder] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
+  const threeDSContainer = useRef<HTMLDivElement>(null);
 
   // Address form
   const [showAddressForm, setShowAddressForm] = useState(false);
@@ -109,12 +116,101 @@ export default function CheckoutPage() {
     }
   }
 
+  // Format card number with spaces
+  function formatCardNumber(value: string): string {
+    const digits = value.replace(/\D/g, "").slice(0, 16);
+    return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+  }
+
+  // Format expiry as MM/YY
+  function formatExpiry(value: string): string {
+    const digits = value.replace(/\D/g, "").slice(0, 4);
+    if (digits.length <= 2) return digits;
+    return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  }
+
+  // Render 3DS form from iyzico HTML content
+  function renderThreeDSForm(base64Html: string) {
+    const html = atob(base64Html);
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+    const form = temp.querySelector("form");
+    if (form) {
+      form.style.display = "none";
+      document.body.appendChild(form);
+      // Script'ler innerHTML'de çalışmaz, form'u manuel submit ediyoruz
+      setTimeout(() => form.submit(), 300);
+    }
+  }
+
+  async function initiateCardPayment(orderData: {
+    items: any[];
+    addressId: string;
+    card: { cardHolderName: string; cardNumber: string; expireMonth: string; expireYear: string; cvc: string };
+    couponCode: string | null;
+    notes: string | null;
+  }) {
+    setLoading(true);
+    setError("");
+
+    const res = await fetch("/api/payment/iyzico-init", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.error || "Ödeme başlatılamadı");
+      setLoading(false);
+      return;
+    }
+
+    clearCart();
+
+    if (data.threeDSHtmlContent) {
+      // Render bank 3DS form — user will be redirected
+      renderThreeDSForm(data.threeDSHtmlContent);
+    } else {
+      // No 3DS needed (unusual for iyzico but handle gracefully)
+      router.push(`/siparis/${data.orderId}`);
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedAddress) {
       setError("Lütfen bir adres seçin");
       return;
     }
+
+    if (paymentMethod === "CREDIT_CARD") {
+      // Validate card fields
+      if (!cardHolder.trim()) { setError("Kart üzerindeki isim gerekli"); return; }
+      const cardDigits = cardNumber.replace(/\s/g, "");
+      if (cardDigits.length < 16) { setError("Geçerli kart numarası girin"); return; }
+      if (cardExpiry.length < 5) { setError("Geçerli son kullanma tarihi girin"); return; }
+      if (cardCvc.length < 3) { setError("Geçerli CVC girin"); return; }
+
+      const [expMonth, expYear] = cardExpiry.split("/");
+
+      await initiateCardPayment({
+        items,
+        addressId: selectedAddress,
+        card: {
+          cardHolderName: cardHolder,
+          cardNumber: cardDigits,
+          expireMonth: expMonth,
+          expireYear: expYear,
+          cvc: cardCvc,
+        },
+        couponCode: appliedCode || null,
+        notes: notes || null,
+      });
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -287,6 +383,68 @@ export default function CheckoutPage() {
             <div className="space-y-2">
               <label
                 className={`flex cursor-pointer rounded-lg border p-3 text-sm ${
+                  paymentMethod === "CREDIT_CARD"
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
+                    : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="payment"
+                  value="CREDIT_CARD"
+                  checked={paymentMethod === "CREDIT_CARD"}
+                  onChange={() => setPaymentMethod("CREDIT_CARD")}
+                  className="mt-0.5 mr-2"
+                />
+                <div>
+                  <p className="font-medium">Kredi Kartı</p>
+                  <p className="text-gray-500">3D Secure ile güvenli ödeme</p>
+                </div>
+              </label>
+
+              {paymentMethod === "CREDIT_CARD" && (
+                <div className="mt-3 space-y-3 rounded-lg border bg-gray-50 p-4 dark:bg-gray-900">
+                  <input
+                    value={cardHolder}
+                    onChange={(e) => setCardHolder(e.target.value)}
+                    placeholder="Kart Üzerindeki İsim"
+                    className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-800"
+                    autoComplete="cc-name"
+                  />
+                  <input
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                    placeholder="Kart Numarası"
+                    className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-800"
+                    autoComplete="cc-number"
+                    inputMode="numeric"
+                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      value={cardExpiry}
+                      onChange={(e) => setCardExpiry(formatExpiry(e.target.value))}
+                      placeholder="AA/YY"
+                      className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-800"
+                      autoComplete="cc-exp"
+                      inputMode="numeric"
+                    />
+                    <input
+                      value={cardCvc}
+                      onChange={(e) => setCardCvc(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                      placeholder="CVC"
+                      className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-800"
+                      autoComplete="cc-csc"
+                      inputMode="numeric"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    Kart bilgileriniz 3D Secure ile güvenli şekilde işlenir, sistemimizde saklanmaz.
+                  </p>
+                </div>
+              )}
+
+              <label
+                className={`flex cursor-pointer rounded-lg border p-3 text-sm ${
                   paymentMethod === "TRANSFER"
                     ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
                     : ""
@@ -439,6 +597,16 @@ export default function CheckoutPage() {
               <p>Siparişiniz oluşturulduktan sonra IBAN bilgilerimiz ekranda gösterilecektir.</p>
             </div>
           )}
+
+          {paymentMethod === "CREDIT_CARD" && (
+            <div className="mt-4 rounded-lg bg-blue-50 p-3 text-xs text-blue-800 dark:bg-blue-950 dark:text-blue-200">
+              <p className="font-medium">Güvenli Ödeme:</p>
+              <p>Ödeme 3D Secure ile korunur. Bankanızın yönlendirmesiyle güvenli sayfaya aktarılacaksınız.</p>
+            </div>
+          )}
+
+          {/* Hidden container for 3DS form rendering */}
+          <div ref={threeDSContainer} style={{ display: "none" }} />
         </div>
       </form>
     </div>

@@ -86,6 +86,29 @@ export default async function OrderConfirmationPage({
             </div>
           )}
 
+          {order.paymentMethod === "CREDIT_CARD" && (
+            <div className="mt-4 rounded-lg bg-blue-50 p-4 text-xs text-blue-800 dark:bg-blue-950 dark:text-blue-200">
+              <p className="mb-1 font-medium">Kredi Kartı Ödemesi</p>
+              {order.paymentStatus === "PAID" ? (
+                <p className="font-medium text-green-700 dark:text-green-300">
+                  Ödemeniz başarıyla alınmıştır.
+                </p>
+              ) : order.paymentStatus === "REFUNDED" ? (
+                <p className="font-medium text-red-700 dark:text-red-300">
+                  Ödemeniz iade edilmiştir.
+                </p>
+              ) : (
+                <>
+                  <p>Ödemeniz henüz onaylanmadı.</p>
+                  <p className="mt-1">
+                    Ödeme 3D Secure ile gerçekleştirilmiştir. Bankanız tarafından onaylanması
+                    beklenmektedir.
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+
           <div className="mt-4 rounded-lg bg-gray-50 p-4 text-sm dark:bg-gray-900">
             <h3 className="mb-1 font-semibold">Teslimat Adresi</h3>
             <p>{order.address.fullName}</p>

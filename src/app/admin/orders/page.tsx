@@ -85,7 +85,7 @@ export default async function AdminOrdersPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-xs">
-                    {order.paymentMethod === "TRANSFER" ? "Havale/EFT" : "Kapıda Ödeme"}
+                    {order.paymentMethod === "TRANSFER" ? "Havale/EFT" : order.paymentMethod === "CREDIT_CARD" ? "Kredi Kartı" : "Kapıda Ödeme"}
                     <br />
                     <span
                       className={

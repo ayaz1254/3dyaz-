@@ -141,7 +141,7 @@ export default async function CustomerOrderDetailPage({
                 Ödeme
               </h2>
               <p className="text-sm">
-                {order.paymentMethod === "TRANSFER" ? "Havale/EFT" : "Kapıda Ödeme"}
+                {order.paymentMethod === "TRANSFER" ? "Havale/EFT" : order.paymentMethod === "CREDIT_CARD" ? "Kredi Kartı" : "Kapıda Ödeme"}
               </p>
               <p className="text-sm">
                 Durum:{" "}
