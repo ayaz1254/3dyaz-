@@ -15,6 +15,7 @@ const orderSchema = z.object({
     .min(1, "En az bir ürün gerekli"),
   addressId: z.string().min(1, "Adres gerekli"),
   paymentMethod: z.enum(["TRANSFER", "COD"], "Geçersiz ödeme yöntemi"),
+  couponCode: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: firstError }, { status: 400 });
     }
 
-    const { items, addressId, paymentMethod, notes } = parsed.data;
+    const { items, addressId, paymentMethod, couponCode, notes } = parsed.data;
 
     // Validate address belongs to user
     const address = await prisma.address.findFirst({
@@ -84,6 +85,29 @@ export async function POST(req: Request) {
     const shippingAmount = totalAmount >= 500 ? 0 : 49.9;
     totalAmount += shippingAmount;
 
+    let discountAmount = 0;
+    let finalNotes = notes || null;
+    if (couponCode) {
+      const coupon = await prisma.coupon.findUnique({ where: { code: couponCode.toUpperCase() } });
+      if (coupon && coupon.isActive) {
+        if (!coupon.expiresAt || new Date() <= coupon.expiresAt) {
+          if (coupon.maxUses === 0 || coupon.usedCount < coupon.maxUses) {
+            const productTotal = totalAmount - shippingAmount;
+            if (productTotal >= coupon.minPurchase) {
+              if (coupon.discountType === "PERCENTAGE") {
+                discountAmount = Math.round((productTotal * coupon.discountValue) / 100 * 100) / 100;
+              } else {
+                discountAmount = Math.min(coupon.discountValue, productTotal);
+              }
+              discountAmount = Math.min(discountAmount, productTotal);
+              finalNotes = [finalNotes, `Kupon: ${couponCode} (${discountAmount.toFixed(2)} ₺ indirim)`].filter(Boolean).join(" | ");
+            }
+          }
+        }
+      }
+    }
+    totalAmount = Math.round((totalAmount - discountAmount) * 100) / 100;
+
     // Create order in transaction
     const order = await prisma.$transaction(async (tx) => {
       const newOrder = await tx.order.create({
@@ -93,7 +117,7 @@ export async function POST(req: Request) {
           totalAmount,
           shippingAmount,
           paymentMethod: paymentMethod as "TRANSFER" | "COD",
-          notes: notes || null,
+          notes: finalNotes,
           addressId,
           payment: {
             create: {
@@ -114,6 +138,13 @@ export async function POST(req: Request) {
         await tx.product.update({
           where: { id: item.productId },
           data: { stock: { decrement: item.quantity } },
+        });
+      }
+
+      if (discountAmount > 0 && couponCode) {
+        await tx.coupon.update({
+          where: { code: couponCode.toUpperCase() },
+          data: { usedCount: { increment: 1 } },
         });
       }
 

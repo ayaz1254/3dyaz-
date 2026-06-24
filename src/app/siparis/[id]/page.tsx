@@ -3,6 +3,15 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
+async function getIbanInfo() {
+  const settings = await prisma.siteSetting.findMany({
+    where: { key: { in: ["iban_bank_name", "iban_number", "iban_holder"] } },
+  });
+  const result: Record<string, string> = {};
+  for (const s of settings) result[s.key] = s.value;
+  return result;
+}
+
 export default async function OrderConfirmationPage({
   params,
 }: {
@@ -25,6 +34,9 @@ export default async function OrderConfirmationPage({
   if (!order || order.userId !== session.user.id) {
     redirect("/dashboard/siparisler");
   }
+
+  const ibanInfo = await getIbanInfo();
+  const hasIban = ibanInfo.iban_number && ibanInfo.iban_holder;
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-12">
@@ -58,10 +70,16 @@ export default async function OrderConfirmationPage({
 
           {order.paymentMethod === "TRANSFER" && (
             <div className="mt-4 rounded-lg bg-yellow-50 p-4 text-xs text-yellow-800 dark:bg-yellow-950 dark:text-yellow-200">
-              <p className="mb-1 font-medium">📋 Havale/EFT Bilgileri</p>
-              <p>Banka: XYZ Bankası</p>
-              <p>IBAN: TR12 3456 7890 1234 5678 9012 34</p>
-              <p>Alıcı Adı: 3D Magza Tic. Ltd. Şti.</p>
+              <p className="mb-1 font-medium">Havale/EFT Bilgileri</p>
+              {hasIban ? (
+                <>
+                  <p>Banka: {ibanInfo.iban_bank_name || "—"}</p>
+                  <p>IBAN: {ibanInfo.iban_number}</p>
+                  <p>Alıcı Adı: {ibanInfo.iban_holder}</p>
+                </>
+              ) : (
+                <p>IBAN bilgileri henüz girilmemiş. Lütfen admin ile iletişime geçin.</p>
+              )}
               <p className="mt-2">
                 Açıklama kısmına sipariş numaranızı ({order.orderNumber}) yazmayı unutmayın.
               </p>

@@ -15,16 +15,19 @@ const statusOptions = [
 export function OrderStatusUpdate({
   orderId,
   currentStatus,
+  currentPaymentStatus,
   cargoCompany,
   cargoTrackingNo,
 }: {
   orderId: string;
   currentStatus: string;
+  currentPaymentStatus: string;
   cargoCompany: string | null;
   cargoTrackingNo: string | null;
 }) {
   const router = useRouter();
   const [status, setStatus] = useState(currentStatus);
+  const [paymentStatus, setPaymentStatus] = useState(currentPaymentStatus);
   const [cargo, setCargo] = useState(cargoCompany || "");
   const [tracking, setTracking] = useState(cargoTrackingNo || "");
   const [loading, setLoading] = useState(false);
@@ -33,14 +36,16 @@ export function OrderStatusUpdate({
     e.preventDefault();
     setLoading(true);
 
+    const body: Record<string, unknown> = {};
+    if (status !== currentStatus) body.status = status;
+    if (paymentStatus !== currentPaymentStatus) body.paymentStatus = paymentStatus;
+    body.cargoCompany = cargo || null;
+    body.cargoTrackingNo = tracking || null;
+
     const res = await fetch(`/api/orders/${orderId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        status,
-        cargoCompany: cargo || null,
-        cargoTrackingNo: tracking || null,
-      }),
+      body: JSON.stringify(body),
     });
 
     if (res.ok) {
@@ -66,6 +71,22 @@ export function OrderStatusUpdate({
             </option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <label className="mb-1 block text-xs text-gray-500">Ödeme Durumu</label>
+        <select
+          value={paymentStatus}
+          onChange={(e) => setPaymentStatus(e.target.value)}
+          className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-900"
+        >
+          <option value="PENDING">Bekliyor</option>
+          <option value="PAID">Ödendi</option>
+          <option value="REFUNDED">İade Edildi</option>
+        </select>
+        {currentPaymentStatus === "PENDING" && paymentStatus === "PAID" && (
+          <p className="mt-1 text-xs text-green-600">Ödeme onaylanacak</p>
+        )}
       </div>
 
       <div>

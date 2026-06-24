@@ -35,6 +35,21 @@ const navItems = [
     href: "/admin/customers",
     icon: "👥",
   },
+  {
+    label: "Yorumlar",
+    href: "/admin/reviews",
+    icon: "⭐",
+  },
+  {
+    label: "Kuponlar",
+    href: "/admin/kuponlar",
+    icon: "🏷️",
+  },
+  {
+    label: "Ayarlar",
+    href: "/admin/ayarlar",
+    icon: "⚙️",
+  },
 ];
 
 export function AdminSidebar() {

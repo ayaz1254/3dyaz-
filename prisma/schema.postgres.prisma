@@ -36,6 +36,7 @@ model User {
   uploads      CustomUpload[]
   orders       Order[]
   sessions     Session[]
+  reviews      Review[]
 }
 
 model Account {
@@ -111,6 +112,7 @@ model Product {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   orderItems   OrderItem[]
+  reviews      Review[]
   category     Category    @relation(fields: [categoryId], references: [id])
 }
 
@@ -184,6 +186,41 @@ model CustomUpload {
   updatedAt        DateTime     @updatedAt
   order            Order?       @relation(fields: [orderId], references: [id])
   user             User         @relation(fields: [userId], references: [id])
+}
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  userId    String
+  rating    Int
+  comment   String?
+  isApproved Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, userId])
+}
+
+model Coupon {
+  id           String    @id @default(cuid())
+  code         String    @unique
+  discountType String    @default("PERCENTAGE")
+  discountValue Float
+  minPurchase  Float     @default(0)
+  maxUses      Int       @default(0)
+  usedCount    Int       @default(0)
+  isActive     Boolean   @default(true)
+  expiresAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 enum UserRole {

@@ -20,6 +20,11 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [couponCode, setCouponCode] = useState("");
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponError, setCouponError] = useState("");
+  const [appliedCode, setAppliedCode] = useState("");
+
   // Address form
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [addrTitle, setAddrTitle] = useState("");
@@ -82,6 +87,28 @@ export default function CheckoutPage() {
     setAddrFull("");
   }
 
+  async function applyCoupon() {
+    if (!couponCode.trim()) return;
+    setCouponError("");
+
+    const res = await fetch("/api/coupons/validate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: couponCode, totalAmount: getCartTotal() }),
+    });
+
+    const data = await res.json();
+    if (data.valid) {
+      setCouponDiscount(data.discountAmount);
+      setAppliedCode(data.code);
+      setCouponError("");
+    } else {
+      setCouponDiscount(0);
+      setAppliedCode("");
+      setCouponError(data.error || "Geçersiz kupon");
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedAddress) {
@@ -98,6 +125,7 @@ export default function CheckoutPage() {
         items,
         addressId: selectedAddress,
         paymentMethod,
+        couponCode: appliedCode || null,
         notes: notes || null,
       }),
     });
@@ -127,7 +155,7 @@ export default function CheckoutPage() {
   }
 
   const shipping = total >= 500 ? 0 : 49.9;
-  const grandTotal = total + shipping;
+  const grandTotal = Math.max(0, total + shipping - couponDiscount);
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-8">
@@ -339,6 +367,43 @@ export default function CheckoutPage() {
             ))}
           </div>
 
+          {/* Coupon */}
+          <div className="mt-4 border-t pt-4">
+            <div className="flex gap-2">
+              <input
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                placeholder="Kupon kodu"
+                className="flex-1 rounded-lg border px-3 py-2 text-sm dark:bg-gray-900"
+              />
+              <button
+                type="button"
+                onClick={applyCoupon}
+                disabled={!couponCode.trim() || !!appliedCode}
+                className="rounded-lg bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200 disabled:opacity-50 dark:bg-gray-800"
+              >
+                Uygula
+              </button>
+            </div>
+            {couponError && <p className="mt-1 text-xs text-red-600">{couponError}</p>}
+            {appliedCode && (
+              <div className="mt-2 flex items-center justify-between rounded bg-green-50 p-2 text-sm text-green-700 dark:bg-green-950 dark:text-green-300">
+                <span>Kupon {appliedCode} uygulandı</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCouponDiscount(0);
+                    setAppliedCode("");
+                    setCouponCode("");
+                  }}
+                  className="text-xs underline"
+                >
+                  Kaldır
+                </button>
+              </div>
+            )}
+          </div>
+
           <div className="mt-4 space-y-2 border-t pt-4 text-sm">
             <div className="flex justify-between">
               <span>Ürün Toplamı ({count} adet)</span>
@@ -348,6 +413,12 @@ export default function CheckoutPage() {
               <span>Kargo</span>
               <span>{shipping === 0 ? "Ücretsiz" : `${shipping.toFixed(2)} ₺`}</span>
             </div>
+            {couponDiscount > 0 && (
+              <div className="flex justify-between text-green-600">
+                <span>İndirim</span>
+                <span>-{couponDiscount.toFixed(2)} ₺</span>
+              </div>
+            )}
             <div className="flex justify-between border-t pt-2 text-lg font-bold">
               <span>Toplam</span>
               <span>{grandTotal.toFixed(2)} ₺</span>

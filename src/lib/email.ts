@@ -110,6 +110,67 @@ function orderStatusEmailHtml(params: {
   `;
 }
 
+function lowStockEmailHtml(params: { products: { name: string; stock: number }[] }): string {
+  const rows = params.products
+    .map((p) => `<tr><td style="padding: 8px 12px; border-bottom: 1px solid #e4e4e7;">${p.name}</td><td style="padding: 8px 12px; border-bottom: 1px solid #e4e4e7; color: #dc2626; font-weight: 600;">${p.stock} adet</td></tr>`)
+    .join("");
+
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #f4f4f5;">
+      <div style="max-width: 560px; margin: 40px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.1);">
+        <div style="background: #dc2626; padding: 32px 24px; text-align: center;">
+          <h1 style="color: #fff; margin: 0; font-size: 24px;">3D Magza</h1>
+          <p style="color: rgba(255,255,255,.8); margin: 8px 0 0; font-size: 14px;">Stok Uyarısı</p>
+        </div>
+        <div style="padding: 24px;">
+          <p style="font-size: 16px; margin: 0 0 16px;">Merhaba,</p>
+          <p style="font-size: 14px; color: #52525b; margin: 0 0 20px;">
+            Aşağıdaki ürünlerin stoğu kritik seviyenin altına düştü:
+          </p>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <thead>
+              <tr style="background: #f4f4f5;">
+                <th style="padding: 8px 12px; text-align: left;">Ürün</th>
+                <th style="padding: 8px 12px; text-align: left;">Kalan Stok</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          <p style="font-size: 14px; color: #52525b; margin: 24px 0 0;">
+            Yeni stok siparişi vermeyi unutmayın.
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+export async function sendLowStockAlert(products: { name: string; stock: number }[]) {
+  const resend = getResend();
+  if (!resend || !process.env.ADMIN_EMAIL) {
+    console.log("[Email] RESEND_API_KEY or ADMIN_EMAIL not configured — skipping low stock alert");
+    return;
+  }
+
+  const from = process.env.EMAIL_FROM || "noreply@3dmagza.com";
+
+  try {
+    await resend.emails.send({
+      from: `3D Magza <${from}>`,
+      to: process.env.ADMIN_EMAIL,
+      subject: `Stok Uyarısı — ${products.length} ürün kritik seviyede`,
+      html: lowStockEmailHtml({ products }),
+    });
+    console.log(`[Email] Low stock alert sent to admin for ${products.length} products`);
+  } catch (error) {
+    console.error("[Email] Failed to send low stock alert:", error);
+  }
+}
+
 export async function sendOrderStatusNotification(params: {
   to: string;
   customerName: string;

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "./add-to-cart";
 import { DynamicModelViewer } from "@/components/dynamic-model-viewer";
+import { ReviewSection } from "./review-section";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -157,6 +158,11 @@ export default async function ProductDetailPage({ params }: Props) {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Reviews */}
+      <div className="col-span-full">
+        <ReviewSection productId={product.id} />
       </div>
 
       {/* Related */}

@@ -9,8 +9,13 @@ const orderStatusEnum = z.enum(
   { message: "Geçersiz sipariş durumu" }
 );
 
+const paymentStatusEnum = z.enum(["PENDING", "PAID", "REFUNDED"], {
+  message: "Geçersiz ödeme durumu",
+});
+
 const updateOrderSchema = z.object({
-  status: orderStatusEnum,
+  status: orderStatusEnum.optional(),
+  paymentStatus: paymentStatusEnum.optional(),
   cargoCompany: z.string().optional().default(""),
   cargoTrackingNo: z.string().optional().default(""),
 });
@@ -119,7 +124,7 @@ export async function PUT(
       );
     }
 
-    const { status, cargoCompany, cargoTrackingNo } = parsed.data;
+    const { status, paymentStatus, cargoCompany, cargoTrackingNo } = parsed.data;
 
     const oldOrder = await prisma.order.findUnique({
       where: { id },
@@ -129,16 +134,25 @@ export async function PUT(
       return NextResponse.json({ error: "Sipariş bulunamadı" }, { status: 404 });
     }
 
+    const updateData: Record<string, unknown> = {};
+    if (status) updateData.status = status;
+    if (paymentStatus) updateData.paymentStatus = paymentStatus;
+    if (cargoCompany !== undefined) updateData.cargoCompany = cargoCompany || null;
+    if (cargoTrackingNo !== undefined) updateData.cargoTrackingNo = cargoTrackingNo || null;
+
     const order = await prisma.order.update({
       where: { id },
-      data: {
-        status,
-        cargoCompany: cargoCompany || null,
-        cargoTrackingNo: cargoTrackingNo || null,
-      },
+      data: updateData,
     });
 
-    if (oldOrder.status !== status) {
+    if (paymentStatus) {
+      await prisma.payment.updateMany({
+        where: { orderId: id },
+        data: { status: paymentStatus as "PENDING" | "PAID" | "REFUNDED" },
+      });
+    }
+
+    if (status && oldOrder.status !== status) {
       sendOrderStatusNotification({
         to: oldOrder.user.email,
         customerName: oldOrder.user.name || "Değerli Müşterimiz",

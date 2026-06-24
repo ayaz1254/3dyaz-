@@ -89,6 +89,7 @@ export default async function AdminOrderDetailPage({
           <OrderStatusUpdate
             orderId={order.id}
             currentStatus={order.status}
+            currentPaymentStatus={order.paymentStatus}
             cargoCompany={order.cargoCompany}
             cargoTrackingNo={order.cargoTrackingNo}
           />
