@@ -1,27 +1,33 @@
 import { PrismaClient } from "@/generated/prisma";
 
-const dbUrl = process.env.DATABASE_URL || "";
-const isPostgres = dbUrl.startsWith("postgresql://") || dbUrl.startsWith("postgres://");
+function buildClient(): PrismaClient {
+  const dbUrl = process.env.DATABASE_URL || "";
 
-function createPrismaClient(): PrismaClient {
-  if (isPostgres) {
-    // Serverless PostgreSQL via Neon
+  if (dbUrl.startsWith("postgresql://") || dbUrl.startsWith("postgres://")) {
     const { PrismaNeon } = require("@prisma/adapter-neon");
     const { Pool } = require("@neondatabase/serverless");
-    const pool = new Pool({ connectionString: dbUrl });
-    const adapter = new PrismaNeon(pool);
-    return new PrismaClient({ adapter });
+    return new PrismaClient({ adapter: new PrismaNeon(new Pool({ connectionString: dbUrl })) });
   }
-  // Local development with SQLite
+
   const { PrismaBetterSqlite3 } = require("@prisma/adapter-better-sqlite3");
-  const adapter = new PrismaBetterSqlite3({ url: dbUrl });
-  return new PrismaClient({ adapter });
+  return new PrismaClient({ adapter: new PrismaBetterSqlite3({ url: dbUrl || "file:./dev.db" }) });
 }
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+function getPrisma(): PrismaClient {
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = buildClient();
+  }
+  return globalForPrisma.prisma;
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Lazy singleton: PrismaClient is created on first property access, not at module import time.
+// This prevents build-time errors when DATABASE_URL isn't available during Next.js build.
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_, prop) {
+    return getPrisma()[prop as keyof PrismaClient];
+  },
+});
