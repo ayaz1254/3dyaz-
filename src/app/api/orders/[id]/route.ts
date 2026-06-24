@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { z } from "zod";
+import { sendOrderStatusNotification } from "@/lib/email";
 
 const orderStatusEnum = z.enum(
   ["PENDING", "APPROVED", "PRINTING", "SHIPPED", "DELIVERED", "CANCELLED"],
@@ -120,6 +121,14 @@ export async function PUT(
 
     const { status, cargoCompany, cargoTrackingNo } = parsed.data;
 
+    const oldOrder = await prisma.order.findUnique({
+      where: { id },
+      include: { user: { select: { name: true, email: true } } },
+    });
+    if (!oldOrder) {
+      return NextResponse.json({ error: "Sipariş bulunamadı" }, { status: 404 });
+    }
+
     const order = await prisma.order.update({
       where: { id },
       data: {
@@ -128,6 +137,19 @@ export async function PUT(
         cargoTrackingNo: cargoTrackingNo || null,
       },
     });
+
+    if (oldOrder.status !== status) {
+      sendOrderStatusNotification({
+        to: oldOrder.user.email,
+        customerName: oldOrder.user.name || "Değerli Müşterimiz",
+        orderNumber: order.orderNumber,
+        oldStatus: oldOrder.status,
+        newStatus: status,
+        cargoCompany,
+        cargoTrackingNo,
+        totalAmount: order.totalAmount,
+      });
+    }
 
     return NextResponse.json(order);
   } catch {

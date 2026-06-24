@@ -1,10 +1,25 @@
+// PostgreSQL production schema
+// Usage:
+//   1. Set DATABASE_URL in .env to a PostgreSQL connection string
+//   2. Generate client: npx prisma generate --schema=prisma/schema.postgres.prisma
+//   3. Run migration: npx prisma migrate dev --schema=prisma/schema.postgres.prisma
+//   4. Run seed: npx tsx prisma/seed.ts
+//
+// Connection string format:
+//   postgresql://user:password@host:5432/dbname?schema=public
+//
+// Free PostgreSQL providers:
+//   - Supabase: https://supabase.com
+//   - Railway: https://railway.app
+//   - Neon: https://neon.tech
+
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model User {
