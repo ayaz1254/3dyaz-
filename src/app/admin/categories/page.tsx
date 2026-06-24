@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 import { CategoryList } from "./category-list";
 
 export default async function AdminCategoriesPage() {

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 
 const statusColors: Record<string, string> = {
