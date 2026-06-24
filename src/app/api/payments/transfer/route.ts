@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { uploadBuffer, isCloudinaryConfigured } from "@/lib/cloudinary";
 
 const transferSchema = z.object({
   orderId: z.string().min(1, "Sipariş ID gerekli"),
@@ -77,15 +77,19 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const uploadDir = path.join(process.cwd(), "public/uploads/receipts");
-      await mkdir(uploadDir, { recursive: true });
-
-      const uniqueName = `receipt-${Date.now()}-${crypto.randomUUID().split("-")[0]}${ext}`;
-      const filePath = path.join(uploadDir, uniqueName);
       const buffer = Buffer.from(await receiptImage.arrayBuffer());
-      await writeFile(filePath, buffer);
-
-      receiptUrl = `/uploads/receipts/${uniqueName}`;
+      if (isCloudinaryConfigured()) {
+        const result = await uploadBuffer(buffer, "receipts", receiptImage.name);
+        receiptUrl = result.secure_url;
+      } else {
+        const { writeFile, mkdir } = await import("fs/promises");
+        const uploadDir = path.join(process.cwd(), "public/uploads/receipts");
+        await mkdir(uploadDir, { recursive: true });
+        const uniqueName = `receipt-${Date.now()}-${crypto.randomUUID().split("-")[0]}${ext}`;
+        const filePath = path.join(uploadDir, uniqueName);
+        await writeFile(filePath, buffer);
+        receiptUrl = `/uploads/receipts/${uniqueName}`;
+      }
     }
 
     // Update payment record

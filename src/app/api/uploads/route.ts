@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { uploadBuffer, isCloudinaryConfigured } from "@/lib/cloudinary";
 
 const MAGIC_BYTES: Record<string, (buf: Buffer) => boolean> = {
   ".stl": (buf) => buf.length > 80 && buf.toString("ascii", 0, 6) === "solid ",
@@ -72,15 +72,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Save file
-    const uploadDir = path.join(process.cwd(), "public/uploads");
-    await mkdir(uploadDir, { recursive: true });
-
-    const uniqueName = `${Date.now()}-${crypto.randomUUID().split("-")[0]}${ext}`;
-    const filePath = path.join(uploadDir, uniqueName);
-    await writeFile(filePath, buffer);
-
-    const fileUrl = `/uploads/${uniqueName}`;
+    // Upload to Cloudinary (fallback to local storage)
+    let fileUrl: string;
+    if (isCloudinaryConfigured()) {
+      const result = await uploadBuffer(buffer, "models", file.name);
+      fileUrl = result.secure_url;
+    } else {
+      // Fallback: local storage (development)
+      const { writeFile, mkdir } = await import("fs/promises");
+      const uploadDir = path.join(process.cwd(), "public/uploads");
+      await mkdir(uploadDir, { recursive: true });
+      const uniqueName = `${Date.now()}-${crypto.randomUUID().split("-")[0]}${ext}`;
+      const filePath = path.join(uploadDir, uniqueName);
+      await writeFile(filePath, buffer);
+      fileUrl = `/uploads/${uniqueName}`;
+    }
 
     const upload = await prisma.customUpload.create({
       data: {
