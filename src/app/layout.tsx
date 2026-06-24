@@ -16,9 +16,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "3D Magza - 3D Baskı Ürünleri",
+  title: {
+    default: "3D Magza - 3D Baskı Ürünleri",
+    template: "%s | 3D Magza",
+  },
   description:
     "3D baskı teknolojisiyle üretilmiş özel tasarım ürünler. Kendi 3D modelinizi yükleyin, size özel basalım.",
+  openGraph: {
+    title: "3D Magza - 3D Baskı Ürünleri",
+    description:
+      "3D baskı teknolojisiyle üretilmiş özel tasarım ürünler. Kendi 3D modelinizi yükleyin, size özel basalım.",
+    type: "website",
+    locale: "tr_TR",
+    siteName: "3D Magza",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "3D Magza - 3D Baskı Ürünleri",
+    description:
+      "3D baskı teknolojisiyle üretilmiş özel tasarım ürünler. Kendi 3D modelinizi yükleyin, size özel basalım.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /checkout/
+
+Sitemap: https://3dmagza.vercel.app/sitemap.xml

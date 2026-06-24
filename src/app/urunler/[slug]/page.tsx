@@ -1,12 +1,58 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { AddToCartButton } from "./add-to-cart";
 import { DynamicModelViewer } from "@/components/dynamic-model-viewer";
 import { ReviewSection } from "./review-section";
 
 interface Props {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+
+  const product = await prisma.product.findUnique({
+    where: { slug },
+    select: {
+      name: true,
+      description: true,
+      shortDesc: true,
+      price: true,
+      images: true,
+      category: { select: { name: true } },
+    },
+  });
+
+  if (!product) return { title: "Ürün Bulunamadı - 3D Magza" };
+
+  const images: string[] = JSON.parse(product.images || "[]");
+  const description = product.shortDesc || product.description.slice(0, 160);
+
+  return {
+    title: `${product.name} - 3D Magza`,
+    description,
+    openGraph: {
+      title: `${product.name} - 3D Magza`,
+      description,
+      type: "website",
+      locale: "tr_TR",
+      siteName: "3D Magza",
+      images: images.length > 0
+        ? [{ url: images[0], width: 1200, height: 1200, alt: product.name }]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${product.name} - 3D Magza`,
+      description,
+      images: images.length > 0 ? [images[0]] : [],
+    },
+    alternates: {
+      canonical: `/urunler/${slug}`,
+    },
+  };
 }
 
 export default async function ProductDetailPage({ params }: Props) {
@@ -32,8 +78,31 @@ export default async function ProductDetailPage({ params }: Props) {
     orderBy: { createdAt: "desc" },
   });
 
+  // Structured data for SEO
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.shortDesc || product.description.slice(0, 200),
+    image: images.length > 0 ? images : undefined,
+    offers: {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "TRY",
+      availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      url: `${process.env.NEXT_PUBLIC_APP_URL || ""}/urunler/${product.slug}`,
+    },
+    ...(product.category?.name ? { category: product.category.name } : {}),
+  };
+
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8">
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm text-gray-500">
         <Link href="/" className="hover:text-blue-600">Ana Sayfa</Link>

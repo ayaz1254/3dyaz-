@@ -1,8 +1,34 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 interface Props {
   searchParams: Promise<Record<string, string | undefined>>;
+}
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const sp = await searchParams;
+  const categorySlug = sp.category;
+
+  let title = "Tüm Ürünler - 3D Magza";
+  let description = "3D baskı teknolojisiyle üretilmiş özel tasarım ürünler. En kaliteli 3D baskı ürünlerini keşfedin.";
+
+  if (categorySlug) {
+    const category = await prisma.category.findUnique({
+      where: { slug: categorySlug },
+      select: { name: true },
+    });
+    if (category) {
+      title = `${category.name} - 3D Magza`;
+      description = `${category.name} kategorisindeki 3D baskı ürünleri. En kaliteli ${category.name.toLowerCase()} modellerini keşfedin.`;
+    }
+  }
+
+  return {
+    title,
+    description,
+    openGraph: { title, description, locale: "tr_TR" },
+  };
 }
 
 function buildUrl(base: string, params: Record<string, string | undefined>, extra: Record<string, string>): string {
