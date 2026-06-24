@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+
+const transferSchema = z.object({
+  orderId: z.string().min(1, "Sipariş ID gerekli"),
+  transferName: z.string().min(1, "Gönderen adı gerekli"),
+  transferDate: z.string().min(1, "Havale tarihi gerekli").regex(/^\d{4}-\d{2}-\d{2}/, "Geçerli bir tarih giriniz (YYYY-AA-GG)"),
+});
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -12,17 +19,20 @@ export async function POST(req: NextRequest) {
 
   try {
     const formData = await req.formData();
-    const orderId = formData.get("orderId") as string | null;
-    const transferName = formData.get("transferName") as string | null;
-    const transferDate = formData.get("transferDate") as string | null;
     const receiptImage = formData.get("receiptImage") as File | null;
 
-    if (!orderId || !transferName || !transferDate) {
-      return NextResponse.json(
-        { error: "Eksik bilgiler: orderId, transferName, transferDate gerekli" },
-        { status: 400 }
-      );
+    const parsed = transferSchema.safeParse({
+      orderId: formData.get("orderId") as string,
+      transferName: formData.get("transferName") as string,
+      transferDate: formData.get("transferDate") as string,
+    });
+
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0]?.message || "Geçersiz veri";
+      return NextResponse.json({ error: firstError }, { status: 400 });
     }
+
+    const { orderId, transferName, transferDate } = parsed.data;
 
     // Validate order belongs to user
     const order = await prisma.order.findFirst({
@@ -70,7 +80,7 @@ export async function POST(req: NextRequest) {
       const uploadDir = path.join(process.cwd(), "public/uploads/receipts");
       await mkdir(uploadDir, { recursive: true });
 
-      const uniqueName = `receipt-${Date.now()}-${Math.random().toString(36).substring(2, 8)}${ext}`;
+      const uniqueName = `receipt-${Date.now()}-${crypto.randomUUID().split("-")[0]}${ext}`;
       const filePath = path.join(uploadDir, uniqueName);
       const buffer = Buffer.from(await receiptImage.arrayBuffer());
       await writeFile(filePath, buffer);

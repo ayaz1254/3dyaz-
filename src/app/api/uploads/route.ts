@@ -4,6 +4,13 @@ import { auth } from "@/lib/auth";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
+const MAGIC_BYTES: Record<string, (buf: Buffer) => boolean> = {
+  ".stl": (buf) => buf.length > 80 && buf.toString("ascii", 0, 6) === "solid ",
+  ".obj": (buf) => buf.toString("utf8", 0, 1) === "#",
+  ".3mf": (buf) => buf[0] === 0x50 && buf[1] === 0x4b,
+  ".step": (buf) => buf.toString("ascii", 0, 13) === "ISO-10303-21;",
+};
+
 export async function GET() {
   const session = await auth();
   if (!session?.user) {
@@ -51,13 +58,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (file.size === 0) {
+      return NextResponse.json({ error: "Boş dosya yüklenemez" }, { status: 400 });
+    }
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+
+    const validateContent = MAGIC_BYTES[ext];
+    if (validateContent && !validateContent(buffer)) {
+      return NextResponse.json(
+        { error: "Dosya içeriği geçersiz veya bozuk" },
+        { status: 400 }
+      );
+    }
+
     // Save file
     const uploadDir = path.join(process.cwd(), "public/uploads");
     await mkdir(uploadDir, { recursive: true });
 
-    const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}${ext}`;
+    const uniqueName = `${Date.now()}-${crypto.randomUUID().split("-")[0]}${ext}`;
     const filePath = path.join(uploadDir, uniqueName);
-    const buffer = Buffer.from(await file.arrayBuffer());
     await writeFile(filePath, buffer);
 
     const fileUrl = `/uploads/${uniqueName}`;

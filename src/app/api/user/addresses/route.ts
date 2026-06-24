@@ -1,6 +1,24 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+
+const addressIdSchema = z.object({
+  id: z.string().min(1, "Adres ID gerekli"),
+});
+
+const addressSchema = z.object({
+  title: z.string().min(1, "Adres başlığı gerekli"),
+  fullName: z.string().min(1, "Ad soyad gerekli"),
+  phone: z.string().min(10, "Geçerli bir telefon numarası giriniz"),
+  city: z.string().min(1, "İl gerekli"),
+  district: z.string().min(1, "İlçe gerekli"),
+  fullAddress: z.string().min(10, "Adres en az 10 karakter olmalıdır"),
+});
+
+const addressUpdateSchema = addressSchema.extend({
+  id: z.string().min(1, "Adres ID gerekli"),
+});
 
 export async function GET() {
   const session = await auth();
@@ -23,8 +41,14 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { title, fullName, phone, city, district, fullAddress } =
-      await req.json();
+    const body = await req.json();
+    const parsed = addressSchema.safeParse(body);
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0]?.message || "Geçersiz veri";
+      return NextResponse.json({ error: firstError }, { status: 400 });
+    }
+
+    const { title, fullName, phone, city, district, fullAddress } = parsed.data;
 
     const address = await prisma.address.create({
       data: {
@@ -54,8 +78,14 @@ export async function PUT(req: Request) {
   }
 
   try {
-    const { id, title, fullName, phone, city, district, fullAddress } =
-      await req.json();
+    const body = await req.json();
+    const parsed = addressUpdateSchema.safeParse(body);
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0]?.message || "Geçersiz veri";
+      return NextResponse.json({ error: firstError }, { status: 400 });
+    }
+
+    const { id, title, fullName, phone, city, district, fullAddress } = parsed.data;
 
     const existing = await prisma.address.findFirst({
       where: { id, userId: session.user.id },
@@ -85,7 +115,13 @@ export async function DELETE(req: Request) {
   }
 
   try {
-    const { id } = await req.json();
+    const body = await req.json();
+    const parsed = addressIdSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Adres ID gerekli" }, { status: 400 });
+    }
+
+    const { id } = parsed.data;
 
     const existing = await prisma.address.findFirst({
       where: { id, userId: session.user.id },
