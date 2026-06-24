@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// === ENUMS ===
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  APPROVED
+  PRINTING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  TRANSFER
+  COD
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+enum UploadStatus {
+  PENDING
+  REVIEWING
+  PRICED
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+// === MODELS ===
+
+model User {
+  id           String   @id @default(cuid())
+  name         String?
+  email        String   @unique
+  passwordHash String
+  phone        String?
+  role         UserRole @default(CUSTOMER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orders    Order[]
+  uploads   CustomUpload[]
+  addresses Address[]
+  accounts  Account[]
+  sessions  Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Address {
+  id          String  @id @default(cuid())
+  userId      String
+  title       String
+  fullName    String
+  phone       String
+  city        String
+  district    String
+  fullAddress String
+  isDefault   Boolean @default(false)
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+}
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  slug        String  @unique
+  description String?
+  imageUrl    String?
+  parentId    String?
+
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+  products Product[]
+}
+
+model Product {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  description  String
+  shortDesc    String?
+  price        Float
+  comparePrice Float?
+  images       String   @default("[]")
+  stock        Int      @default(0)
+  isPublished  Boolean  @default(false)
+  material     String?
+  dimensions   String?
+  weight       Float?
+  colors       String   @default("[]")
+  isDigital    Boolean  @default(false)
+  fileUrl      String?
+  categoryId   String
+
+  category   Category    @relation(fields: [categoryId], references: [id])
+  orderItems OrderItem[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique
+  userId          String
+  status          OrderStatus   @default(PENDING)
+  totalAmount     Float
+  shippingAmount  Float         @default(0)
+  paymentMethod   PaymentMethod
+  paymentStatus   PaymentStatus @default(PENDING)
+  notes           String?
+  addressId       String
+  cargoCompany    String?
+  cargoTrackingNo String?
+
+  user         User          @relation(fields: [userId], references: [id])
+  address      Address       @relation(fields: [addressId], references: [id])
+  items        OrderItem[]
+  payment      Payment?
+  customUpload CustomUpload?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  productId  String?
+  quantity   Int      @default(1)
+  unitPrice  Float
+  totalPrice Float
+
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id])
+}
+
+model Payment {
+  id           String        @id @default(cuid())
+  orderId      String        @unique
+  method       PaymentMethod
+  amount       Float
+  status       PaymentStatus @default(PENDING)
+  transferName String?
+  transferDate DateTime?
+  receiptImage String?
+  adminNote    String?
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CustomUpload {
+  id               String       @id @default(cuid())
+  userId           String
+  status           UploadStatus @default(PENDING)
+  fileName         String
+  fileUrl          String
+  fileSize         Int
+  fileType         String
+  notes            String?
+  desiredColor     String?
+  desiredSize      String?
+  adminNote        String?
+  estimatedPrice   Float?
+  estimatedDays    Int?
+  isPrintable      Boolean?
+  rejectionReason  String?
+  customerApproved Boolean?
+  orderId          String?      @unique
+
+  user      User     @relation(fields: [userId], references: [id])
+  order     Order?   @relation(fields: [orderId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

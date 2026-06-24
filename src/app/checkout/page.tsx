@@ -1,0 +1,375 @@
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getCart, getCartTotal, getCartCount, clearCart } from "@/lib/cart";
+
+export default function CheckoutPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const [items, setItems] = useState(getCart());
+  const [count, setCount] = useState(getCartCount());
+  const [total, setTotal] = useState(getCartTotal());
+
+  const [addresses, setAddresses] = useState<any[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"TRANSFER" | "COD">("TRANSFER");
+  const [notes, setNotes] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Address form
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [addrTitle, setAddrTitle] = useState("");
+  const [addrName, setAddrName] = useState("");
+  const [addrPhone, setAddrPhone] = useState("");
+  const [addrCity, setAddrCity] = useState("");
+  const [addrDistrict, setAddrDistrict] = useState("");
+  const [addrFull, setAddrFull] = useState("");
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+      return;
+    }
+    if (session?.user) {
+      fetchAddresses();
+    }
+  }, [session, status]);
+
+  async function fetchAddresses() {
+    setItems(getCart());
+    setCount(getCartCount());
+    setTotal(getCartTotal());
+    const res = await fetch("/api/user/addresses");
+    if (res.ok) {
+      const data = await res.json();
+      setAddresses(data);
+      if (data.length > 0) setSelectedAddress(data[0].id);
+    }
+  }
+
+  async function addAddress(e: React.FormEvent) {
+    e.preventDefault();
+    const res = await fetch("/api/user/addresses", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: addrTitle,
+        fullName: addrName,
+        phone: addrPhone,
+        city: addrCity,
+        district: addrDistrict,
+        fullAddress: addrFull,
+      }),
+    });
+
+    if (res.ok) {
+      setShowAddressForm(false);
+      resetAddressForm();
+      fetchAddresses();
+    }
+  }
+
+  function resetAddressForm() {
+    setAddrTitle("");
+    setAddrName("");
+    setAddrPhone("");
+    setAddrCity("");
+    setAddrDistrict("");
+    setAddrFull("");
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedAddress) {
+      setError("Lütfen bir adres seçin");
+      return;
+    }
+    setLoading(true);
+    setError("");
+
+    const res = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items,
+        addressId: selectedAddress,
+        paymentMethod,
+        notes: notes || null,
+      }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      clearCart();
+      router.push(`/siparis/${data.orderId}`);
+    } else {
+      const data = await res.json();
+      setError(data.error || "Sipariş oluşturulamadı");
+    }
+    setLoading(false);
+  }
+
+  if (status === "loading") return <div className="p-8 text-center">Yükleniyor...</div>;
+
+  if (items.length === 0) {
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-20 text-center">
+        <p className="mb-4 text-lg text-gray-500">Sepetiniz boş</p>
+        <button onClick={() => router.push("/urunler")} className="text-blue-600 hover:underline">
+          Alışverişe Başla
+        </button>
+      </div>
+    );
+  }
+
+  const shipping = total >= 500 ? 0 : 49.9;
+  const grandTotal = total + shipping;
+
+  return (
+    <div className="mx-auto w-full max-w-4xl px-4 py-8">
+      <h1 className="mb-8 text-2xl font-bold">Siparişi Tamamla</h1>
+
+      {error && (
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        {/* Left: Address + Payment */}
+        <div className="space-y-6">
+          {/* Address */}
+          <div className="rounded-lg border bg-white p-4 dark:bg-gray-950">
+            <h2 className="mb-3 font-semibold">Teslimat Adresi</h2>
+
+            {addresses.length > 0 && !showAddressForm && (
+              <div className="space-y-2">
+                {addresses.map((addr: any) => (
+                  <label
+                    key={addr.id}
+                    className={`flex cursor-pointer rounded-lg border p-3 text-sm ${
+                      selectedAddress === addr.id
+                        ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
+                        : ""
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="address"
+                      value={addr.id}
+                      checked={selectedAddress === addr.id}
+                      onChange={(e) => setSelectedAddress(e.target.value)}
+                      className="mt-0.5 mr-2"
+                    />
+                    <div>
+                      <p className="font-medium">{addr.fullName}</p>
+                      <p className="text-gray-500">{addr.fullAddress}</p>
+                      <p className="text-gray-500">
+                        {addr.district}, {addr.city} - {addr.phone}
+                      </p>
+                    </div>
+                  </label>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setShowAddressForm(true)}
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  + Yeni Adres Ekle
+                </button>
+              </div>
+            )}
+
+            {showAddressForm && (
+              <div className="space-y-3">
+                <input
+                  required
+                  value={addrTitle}
+                  onChange={(e) => setAddrTitle(e.target.value)}
+                  placeholder="Adres Başlığı (Ev / İş)"
+                  className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-900"
+                />
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    required
+                    value={addrName}
+                    onChange={(e) => setAddrName(e.target.value)}
+                    placeholder="Ad Soyad"
+                    className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-900"
+                  />
+                  <input
+                    required
+                    value={addrPhone}
+                    onChange={(e) => setAddrPhone(e.target.value)}
+                    placeholder="Telefon"
+                    className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-900"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    required
+                    value={addrCity}
+                    onChange={(e) => setAddrCity(e.target.value)}
+                    placeholder="İl"
+                    className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-900"
+                  />
+                  <input
+                    required
+                    value={addrDistrict}
+                    onChange={(e) => setAddrDistrict(e.target.value)}
+                    placeholder="İlçe"
+                    className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-900"
+                  />
+                </div>
+                <textarea
+                  required
+                  value={addrFull}
+                  onChange={(e) => setAddrFull(e.target.value)}
+                  placeholder="Adres (cadde, sokak, mahalle, apartman...)"
+                  rows={3}
+                  className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-900"
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={addAddress}
+                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                  >
+                    Kaydet
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddressForm(false)}
+                    className="rounded-lg border px-4 py-2 text-sm hover:bg-gray-50"
+                  >
+                    İptal
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Payment */}
+          <div className="rounded-lg border bg-white p-4 dark:bg-gray-950">
+            <h2 className="mb-3 font-semibold">Ödeme Yöntemi</h2>
+            <div className="space-y-2">
+              <label
+                className={`flex cursor-pointer rounded-lg border p-3 text-sm ${
+                  paymentMethod === "TRANSFER"
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
+                    : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="payment"
+                  value="TRANSFER"
+                  checked={paymentMethod === "TRANSFER"}
+                  onChange={() => setPaymentMethod("TRANSFER")}
+                  className="mt-0.5 mr-2"
+                />
+                <div>
+                  <p className="font-medium">Havale / EFT</p>
+                  <p className="text-gray-500">
+                    Sipariş onayından sonra IBAN&apos;a havale yapın
+                  </p>
+                </div>
+              </label>
+              <label
+                className={`flex cursor-pointer rounded-lg border p-3 text-sm ${
+                  paymentMethod === "COD"
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
+                    : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="payment"
+                  value="COD"
+                  checked={paymentMethod === "COD"}
+                  onChange={() => setPaymentMethod("COD")}
+                  className="mt-0.5 mr-2"
+                />
+                <div>
+                  <p className="font-medium">Kapıda Ödeme</p>
+                  <p className="text-gray-500">Kuryeye teslimatta nakit/kart ile ödeyin</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div className="rounded-lg border bg-white p-4 dark:bg-gray-950">
+            <h2 className="mb-3 font-semibold">Sipariş Notu</h2>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="İsteğe bağlı not ekleyin..."
+              rows={3}
+              className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-900"
+            />
+          </div>
+        </div>
+
+        {/* Right: Order Summary */}
+        <div className="rounded-lg border bg-white p-4 dark:bg-gray-950">
+          <h2 className="mb-3 font-semibold">Sipariş Özeti</h2>
+          <div className="divide-y">
+            {items.map((item) => (
+              <div key={item.productId} className="flex items-center gap-3 py-2">
+                {item.image && (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="h-12 w-12 rounded object-cover"
+                  />
+                )}
+                <div className="flex-1 text-sm">
+                  <p className="font-medium">{item.name}</p>
+                  <p className="text-gray-500">{item.quantity} adet</p>
+                </div>
+                <p className="text-sm font-medium">
+                  {(item.price * item.quantity).toFixed(2)} ₺
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 space-y-2 border-t pt-4 text-sm">
+            <div className="flex justify-between">
+              <span>Ürün Toplamı ({count} adet)</span>
+              <span>{total.toFixed(2)} ₺</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Kargo</span>
+              <span>{shipping === 0 ? "Ücretsiz" : `${shipping.toFixed(2)} ₺`}</span>
+            </div>
+            <div className="flex justify-between border-t pt-2 text-lg font-bold">
+              <span>Toplam</span>
+              <span>{grandTotal.toFixed(2)} ₺</span>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading || !selectedAddress}
+            className="mt-4 w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            {loading ? "Sipariş oluşturuluyor..." : "Siparişi Onayla"}
+          </button>
+
+          {paymentMethod === "TRANSFER" && (
+            <div className="mt-4 rounded-lg bg-yellow-50 p-3 text-xs text-yellow-800 dark:bg-yellow-950 dark:text-yellow-200">
+              <p className="font-medium">Havale/EFT Bilgisi:</p>
+              <p>Siparişiniz oluşturulduktan sonra IBAN bilgilerimiz ekranda gösterilecektir.</p>
+            </div>
+          )}
+        </div>
+      </form>
+    </div>
+  );
+}
