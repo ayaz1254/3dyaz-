@@ -1,6 +1,25 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { z } from "zod";
+
+const updateProductSchema = z.object({
+  name: z.string().min(1).optional(),
+  description: z.string().optional(),
+  shortDesc: z.string().optional(),
+  price: z.coerce.number().positive().optional(),
+  comparePrice: z.coerce.number().optional(),
+  images: z.array(z.string()).optional(),
+  stock: z.coerce.number().int().min(0).optional(),
+  isPublished: z.boolean().optional(),
+  material: z.string().optional(),
+  dimensions: z.string().optional(),
+  weight: z.coerce.number().optional(),
+  colors: z.array(z.string()).optional(),
+  isDigital: z.boolean().optional(),
+  fileUrl: z.string().optional(),
+  categoryId: z.string().min(1).optional(),
+});
 
 export async function GET(
   _req: Request,
@@ -33,26 +52,35 @@ export async function PUT(
 
   try {
     const body = await req.json();
+    const parsed = updateProductSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Geçersiz veri", fields: parsed.error.issues.map((i) => ({ field: i.path.join("."), message: i.message })) },
+        { status: 400 }
+      );
+    }
+
+    const data: Record<string, unknown> = {};
+    const fields = parsed.data;
+    if (fields.name !== undefined) data.name = fields.name;
+    if (fields.description !== undefined) data.description = fields.description;
+    if (fields.shortDesc !== undefined) data.shortDesc = fields.shortDesc || null;
+    if (fields.price !== undefined) data.price = fields.price;
+    if (fields.comparePrice !== undefined) data.comparePrice = fields.comparePrice || null;
+    if (fields.images !== undefined) data.images = JSON.stringify(fields.images);
+    if (fields.stock !== undefined) data.stock = fields.stock;
+    if (fields.isPublished !== undefined) data.isPublished = fields.isPublished;
+    if (fields.material !== undefined) data.material = fields.material || null;
+    if (fields.dimensions !== undefined) data.dimensions = fields.dimensions || null;
+    if (fields.weight !== undefined) data.weight = fields.weight || null;
+    if (fields.colors !== undefined) data.colors = JSON.stringify(fields.colors);
+    if (fields.isDigital !== undefined) data.isDigital = fields.isDigital;
+    if (fields.fileUrl !== undefined) data.fileUrl = fields.fileUrl || null;
+    if (fields.categoryId !== undefined) data.categoryId = fields.categoryId;
 
     const product = await prisma.product.update({
       where: { id },
-      data: {
-        name: body.name,
-        description: body.description,
-        shortDesc: body.shortDesc || null,
-        price: parseFloat(body.price),
-        comparePrice: body.comparePrice ? parseFloat(body.comparePrice) : null,
-        images: body.images || [],
-        stock: parseInt(body.stock) || 0,
-        isPublished: body.isPublished || false,
-        material: body.material || null,
-        dimensions: body.dimensions || null,
-        weight: body.weight ? parseFloat(body.weight) : null,
-        colors: body.colors || [],
-        isDigital: body.isDigital || false,
-        fileUrl: body.fileUrl || null,
-        categoryId: body.categoryId,
-      },
+      data,
     });
 
     return NextResponse.json(product);

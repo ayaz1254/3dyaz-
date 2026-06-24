@@ -1,6 +1,18 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { z } from "zod";
+
+const orderStatusEnum = z.enum(
+  ["PENDING", "APPROVED", "PRINTING", "SHIPPED", "DELIVERED", "CANCELLED"],
+  { message: "Geçersiz sipariş durumu" }
+);
+
+const updateOrderSchema = z.object({
+  status: orderStatusEnum,
+  cargoCompany: z.string().optional().default(""),
+  cargoTrackingNo: z.string().optional().default(""),
+});
 
 export async function GET(
   _req: Request,
@@ -98,13 +110,22 @@ export async function PUT(
 
   try {
     const body = await req.json();
+    const parsed = updateOrderSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Geçersiz veri", fields: parsed.error.issues.map((i) => ({ field: i.path.join("."), message: i.message })) },
+        { status: 400 }
+      );
+    }
+
+    const { status, cargoCompany, cargoTrackingNo } = parsed.data;
 
     const order = await prisma.order.update({
       where: { id },
       data: {
-        status: body.status,
-        cargoCompany: body.cargoCompany || null,
-        cargoTrackingNo: body.cargoTrackingNo || null,
+        status,
+        cargoCompany: cargoCompany || null,
+        cargoTrackingNo: cargoTrackingNo || null,
       },
     });
 
