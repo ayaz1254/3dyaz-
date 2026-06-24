@@ -1,40 +1,27 @@
 import { PrismaClient } from "@/generated/prisma";
 
-const dbUrl = process.env.DATABASE_URL || "file:./dev.db";
+const dbUrl = process.env.DATABASE_URL || "";
 const isPostgres = dbUrl.startsWith("postgresql://") || dbUrl.startsWith("postgres://");
-
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
 
 function createPrismaClient(): PrismaClient {
   if (isPostgres) {
-    return new PrismaClient();
+    // Serverless PostgreSQL via Neon
+    const { PrismaNeon } = require("@prisma/adapter-neon");
+    const { Pool } = require("@neondatabase/serverless");
+    const pool = new Pool({ connectionString: dbUrl });
+    const adapter = new PrismaNeon(pool);
+    return new PrismaClient({ adapter });
   }
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  // Local development with SQLite
   const { PrismaBetterSqlite3 } = require("@prisma/adapter-better-sqlite3");
   const adapter = new PrismaBetterSqlite3({ url: dbUrl });
   return new PrismaClient({ adapter });
 }
 
-// Lazy singleton proxy: PrismaClient is NOT created at import time.
-// It's created on first property access (first DB query).
-// This prevents build errors when DATABASE_URL isn't available at build time.
-function createProxy(): PrismaClient {
-  return new Proxy({} as PrismaClient, {
-    get(_target, prop) {
-      if (!globalForPrisma.prisma) {
-        globalForPrisma.prisma = createPrismaClient();
-      }
-      const value = (globalForPrisma.prisma as unknown as Record<string | symbol, unknown>)[prop];
-      return typeof value === "function" ? value.bind(globalForPrisma.prisma) : value;
-    },
-  }) as PrismaClient;
-}
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
-/**
- * Singleton PrismaClient instance.
- * Uses lazy initialization via Proxy to avoid connecting to the database at module import time,
- * which would fail during Next.js build when DATABASE_URL isn't available.
- */
-export const prisma: PrismaClient = globalForPrisma.prisma ?? createProxy();
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
