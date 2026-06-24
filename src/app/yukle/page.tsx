@@ -2,7 +2,8 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { DynamicModelViewer } from "@/components/dynamic-model-viewer";
 
 export default function UploadPage() {
   const { data: session, status } = useSession();
@@ -141,6 +142,14 @@ export default function UploadPage() {
       </form>
 
       {/* Upload history */}
+      {/* 3D Preview before upload */}
+      {file && (
+        <div className="mb-6">
+          <h2 className="mb-2 text-lg font-semibold">Önizleme</h2>
+          <FilePreview file={file} />
+        </div>
+      )}
+
       {uploads.length > 0 && (
         <div>
           <h2 className="mb-4 text-lg font-semibold">Geçmiş Yüklemeleriniz</h2>
@@ -163,6 +172,17 @@ export default function UploadPage() {
                     {statusLabels[u.status] || u.status}
                   </span>
                 </div>
+
+                {/\.(stl|obj|3mf)$/i.test(u.fileName) && (
+                  <details className="group mt-3">
+                    <summary className="cursor-pointer text-sm font-medium text-blue-600 hover:underline">
+                      3D Modeli Görüntüle
+                    </summary>
+                    <div className="mt-2">
+                      <DynamicModelViewer url={u.fileUrl} />
+                    </div>
+                  </details>
+                )}
 
                 {u.estimatedPrice && (
                   <div className="mt-2 text-sm">
@@ -207,4 +227,24 @@ export default function UploadPage() {
       )}
     </div>
   );
+}
+
+function FilePreview({ file }: { file: File }) {
+  const objectUrl = useMemo(() => URL.createObjectURL(file), [file]);
+
+  useEffect(() => {
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [objectUrl]);
+
+  const is3dModel = /\.(stl|obj|3mf)$/i.test(file.name);
+
+  if (!is3dModel) {
+    return (
+      <div className="rounded-lg border bg-gray-50 p-8 text-center text-sm text-gray-500 dark:bg-gray-900">
+        {file.name} — Bu dosya türü için önizleme desteklenmiyor
+      </div>
+    );
+  }
+
+  return <DynamicModelViewer url={objectUrl} />;
 }
