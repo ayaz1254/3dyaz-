@@ -143,6 +143,8 @@ model Payment {
   transferName String?
   transferDate DateTime?
   receiptImage String?
+  iyzicoPaymentId String?
+  iyzicoConversationId String?
   adminNote    String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -225,6 +227,7 @@ enum OrderStatus {
 enum PaymentMethod {
   TRANSFER
   COD
+  CREDIT_CARD
 }
 
 enum PaymentStatus {
