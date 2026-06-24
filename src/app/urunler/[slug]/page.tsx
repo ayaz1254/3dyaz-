@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "./add-to-cart";
+import { DynamicModelViewer } from "@/components/dynamic-model-viewer";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -76,6 +77,14 @@ export default async function ProductDetailPage({ params }: Props) {
                   <img src={img} alt="" className="h-full w-full object-cover" />
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* 3D Model Preview */}
+          {product.fileUrl && /\.(stl|obj|3mf)$/i.test(product.fileUrl) && (
+            <div className="mt-6">
+              <h3 className="mb-2 text-sm font-semibold text-gray-500">3D Model</h3>
+              <DynamicModelViewer url={product.fileUrl} />
             </div>
           )}
         </div>
