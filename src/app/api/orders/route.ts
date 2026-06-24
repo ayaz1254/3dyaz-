@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { sendNewOrderAdminNotification } from "@/lib/email";
 
 const orderSchema = z.object({
   items: z
@@ -149,6 +150,20 @@ export async function POST(req: Request) {
       }
 
       return newOrder;
+    });
+
+    // Notify admin of new order
+    sendNewOrderAdminNotification({
+      orderNumber,
+      customerName: session.user.name || "Müşteri",
+      customerEmail: session.user.email || "",
+      totalAmount,
+      paymentMethod,
+      items: orderItems.map((oi) => ({
+        name: items.find((ri: { productId: string; name?: string }) => ri.productId === oi.productId)?.name || "Ürün",
+        quantity: oi.quantity,
+        price: oi.unitPrice,
+      })),
     });
 
     return NextResponse.json({ orderId: order.id, orderNumber }, { status: 201 });

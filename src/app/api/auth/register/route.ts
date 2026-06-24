@@ -13,7 +13,7 @@ const registerSchema = z.object({
 export async function POST(req: Request) {
   try {
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-    const { allowed, remaining } = rateLimit(ip);
+    const { allowed, remaining } = await rateLimit(ip);
     if (!allowed) {
       return NextResponse.json(
         { error: "Çok fazla istek, lütfen bekleyin" },

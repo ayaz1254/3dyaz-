@@ -8,7 +8,7 @@ export const GET = handlers.GET;
 export async function POST(req: NextRequest) {
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  const { allowed } = rateLimit(ip);
+  const { allowed } = await rateLimit(ip);
   if (!allowed) {
     return NextResponse.json(
       { error: "Çok fazla istek, lütfen bekleyin" },

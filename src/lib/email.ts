@@ -171,6 +171,95 @@ export async function sendLowStockAlert(products: { name: string; stock: number 
   }
 }
 
+function newOrderAdminEmailHtml(params: {
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  totalAmount: number;
+  paymentMethod: string;
+  items: { name: string; quantity: number; price: number }[];
+}): string {
+  const itemsRows = params.items
+    .map(
+      (item) =>
+        `<tr><td style="padding: 8px 12px; border-bottom: 1px solid #e4e4e7;">${item.name}</td><td style="padding: 8px 12px; border-bottom: 1px solid #e4e4e7;">${item.quantity} adet</td><td style="padding: 8px 12px; border-bottom: 1px solid #e4e4e7; text-align: right;">${item.price.toFixed(2)} ₺</td></tr>`
+    )
+    .join("");
+
+  const methodLabel =
+    params.paymentMethod === "TRANSFER"
+      ? "Havale/EFT"
+      : params.paymentMethod === "CREDIT_CARD"
+        ? "Kredi Kartı"
+        : "Kapıda Ödeme";
+
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #f4f4f5;">
+      <div style="max-width: 560px; margin: 40px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.1);">
+        <div style="background: linear-gradient(135deg, #16a34a, #2563eb); padding: 32px 24px; text-align: center;">
+          <h1 style="color: #fff; margin: 0; font-size: 24px;">3D Magza</h1>
+          <p style="color: rgba(255,255,255,.8); margin: 8px 0 0; font-size: 14px;">Yeni Sipariş!</p>
+        </div>
+        <div style="padding: 24px;">
+          <p style="font-size: 16px; margin: 0 0 8px;">Yeni bir sipariş alındı 🎉</p>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <tr><td style="padding: 8px 0; border-top: 1px solid #e4e4e7;"><strong>Sipariş No</strong></td><td style="padding: 8px 0; border-top: 1px solid #e4e4e7;">${params.orderNumber}</td></tr>
+            <tr><td style="padding: 8px 0; border-top: 1px solid #e4e4e7;"><strong>Müşteri</strong></td><td style="padding: 8px 0; border-top: 1px solid #e4e4e7;">${params.customerName} (${params.customerEmail})</td></tr>
+            <tr><td style="padding: 8px 0; border-top: 1px solid #e4e4e7;"><strong>Ödeme</strong></td><td style="padding: 8px 0; border-top: 1px solid #e4e4e7;">${methodLabel}</td></tr>
+            <tr><td style="padding: 8px 0; border-top: 1px solid #e4e4e7;"><strong>Toplam</strong></td><td style="padding: 8px 0; border-top: 1px solid #e4e4e7; font-weight: bold;">${params.totalAmount.toFixed(2)} ₺</td></tr>
+          </table>
+          <h3 style="margin: 16px 0 8px; font-size: 14px;">Ürünler</h3>
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+            <thead><tr style="background: #f4f4f5;"><th style="padding: 8px 12px; text-align: left;">Ürün</th><th style="padding: 8px 12px; text-align: left;">Adet</th><th style="padding: 8px 12px; text-align: right;">Tutar</th></tr></thead>
+            <tbody>${itemsRows}</tbody>
+          </table>
+          <div style="text-align: center; margin-top: 24px;">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://3dmagza.vercel.app"}/admin/orders/${params.orderNumber}" style="display: inline-block; background: #2563eb; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 500;">
+              Siparişi Görüntüle
+            </a>
+          </div>
+        </div>
+        <div style="padding: 24px; text-align: center; border-top: 1px solid #e4e4e7; font-size: 12px; color: #a1a1aa;">
+          <p style="margin: 0;">3D Magza — 3D baskı teknolojisiyle üretilmiş özel tasarım ürünler</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+export async function sendNewOrderAdminNotification(params: {
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  totalAmount: number;
+  paymentMethod: string;
+  items: { name: string; quantity: number; price: number }[];
+}) {
+  const resend = getResend();
+  if (!resend || !process.env.ADMIN_EMAIL) {
+    console.log("[Email] RESEND_API_KEY or ADMIN_EMAIL not configured — skipping new order notification");
+    return;
+  }
+
+  const from = process.env.EMAIL_FROM || "noreply@3dmagza.com";
+
+  try {
+    await resend.emails.send({
+      from: `3D Magza <${from}>`,
+      to: process.env.ADMIN_EMAIL,
+      subject: `🛒 Yeni Sipariş — ${params.orderNumber}`,
+      html: newOrderAdminEmailHtml(params),
+    });
+    console.log(`[Email] New order notification sent to admin for ${params.orderNumber}`);
+  } catch (error) {
+    console.error("[Email] Failed to send new order notification:", error);
+  }
+}
+
 export async function sendOrderStatusNotification(params: {
   to: string;
   customerName: string;
