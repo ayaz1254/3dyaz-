@@ -40,7 +40,6 @@ export function Header() {
     { href: "/ozel-figur", label: "Özel Figür" },
     { href: "/blog", label: "Blog" },
     { href: "/yukle", label: "STL Yükle" },
-    { href: "/sss", label: "SSS" },
   ];
 
   return (

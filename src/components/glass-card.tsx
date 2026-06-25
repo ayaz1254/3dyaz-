@@ -52,20 +52,32 @@ export function GlassCard({
         initial={{ opacity: 0, y: 24 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
-        className="relative h-full overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl dark:bg-gray-950/40"
+        className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 backdrop-blur-xl transition-all duration-500 dark:bg-gray-950/30"
         style={{ boxShadow: `0 8px 32px ${glowColor}` }}
         whileHover={{
-          boxShadow: `0 12px 48px ${glowColor}`,
-          borderColor: "rgba(255,255,255,0.2)",
+          boxShadow: `0 16px 56px ${glowColor.replace("0.15", "0.25")}`,
+          borderColor: "rgba(255,255,255,0.15)",
+          y: -2,
           transition: { duration: 0.3 },
         }}
       >
-        {/* subtle corner glow */}
         <div
-          className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-full opacity-30 blur-3xl"
+          className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-full opacity-20 blur-3xl transition-all duration-700 group-hover:opacity-40 group-hover:scale-150"
           style={{ background: glowColor }}
         />
-        {children}
+        <div
+          className="pointer-events-none absolute -bottom-16 -left-16 h-24 w-24 rounded-full opacity-0 blur-2xl transition-all duration-700 group-hover:opacity-20"
+          style={{ background: glowColor }}
+        />
+        <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `linear-gradient(135deg, transparent 40%, ${glowColor.replace("0.15", "0.04")} 100%)`,
+            }}
+          />
+        </div>
+        <div className="relative z-10">{children}</div>
       </motion.div>
     </div>
   );

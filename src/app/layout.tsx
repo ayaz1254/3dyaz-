@@ -85,6 +85,7 @@ export default function RootLayout({
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </head>
       <body className="relative flex min-h-full flex-col">
+        <div className="pointer-events-none fixed inset-0 z-[1] bg-dot-grid-subtle opacity-50" />
         <AnimatedBackground />
         <div className="relative z-10 flex flex-1 flex-col">
           <SessionProvider>
