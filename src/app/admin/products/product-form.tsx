@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 
 type Category = { id: string; name: string };
 type Product = {
@@ -23,6 +23,19 @@ type Product = {
   categoryId: string;
 };
 
+function parseImages(images: string): string[] {
+  try {
+    const parsed = JSON.parse(images);
+    if (Array.isArray(parsed)) return parsed;
+    return [];
+  } catch {
+    return images
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+}
+
 export function ProductForm({
   product,
   categories,
@@ -33,6 +46,7 @@ export function ProductForm({
   const router = useRouter();
   const isEdit = !!product;
 
+  const initialImages = product?.images ? parseImages(product.images) : [];
   const [form, setForm] = useState({
     name: product?.name || "",
     description: product?.description || "",
@@ -40,7 +54,6 @@ export function ProductForm({
     price: product?.price || 0,
     comparePrice: product?.comparePrice || 0,
     stock: product?.stock ?? 0,
-    images: product?.images ? JSON.parse(product.images).join(", ") : "",
     material: product?.material || "",
     dimensions: product?.dimensions || "",
     weight: product?.weight || 0,
@@ -50,20 +63,85 @@ export function ProductForm({
     fileUrl: product?.fileUrl || "",
     categoryId: product?.categoryId || (categories[0]?.id ?? ""),
   });
+  const [imageUrls, setImageUrls] = useState<string[]>(initialImages);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const dragRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleImageUpload = useCallback(async (files: FileList | File[]) => {
+    setUploading(true);
+    setError("");
+    const uploaded: string[] = [];
+
+    for (const file of Array.from(files)) {
+      if (!file.type.startsWith("image/")) {
+        setError("Sadece görsel dosyaları yükleyebilirsiniz.");
+        continue;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setError("Her dosya maksimum 5MB olabilir.");
+        continue;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+        if (res.ok) {
+          const data = await res.json();
+          uploaded.push(data.url);
+        } else {
+          const err = await res.json();
+          setError(err.error || "Yükleme başarısız");
+        }
+      } catch {
+        setError("Dosya yüklenemedi");
+      }
+    }
+
+    if (uploaded.length > 0) {
+      setImageUrls((prev) => [...prev, ...uploaded]);
+    }
+    setUploading(false);
+  }, []);
+
+  const removeImage = useCallback((index: number) => {
+    setImageUrls((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+      if (e.dataTransfer.files.length > 0) {
+        handleImageUpload(e.dataTransfer.files);
+      }
+    },
+    [handleImageUpload]
+  );
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     const body = {
       ...form,
-      images: form.images
-        .split(",")
-        .map((s: string) => s.trim())
-        .filter(Boolean),
+      images: imageUrls,
       colors: form.colors
         .split(",")
         .map((s: string) => s.trim())
@@ -76,25 +154,29 @@ export function ProductForm({
       isDigital: form.isDigital,
     };
 
-    const url = isEdit
-      ? `/api/products/${product.id}`
-      : "/api/products";
+    const url = isEdit ? `/api/products/${product.id}` : "/api/products";
     const method = isEdit ? "PUT" : "POST";
 
-    const res = await fetch(url, {
+    fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
-    });
-
-    if (res.ok) {
-      router.push("/admin/products");
-      router.refresh();
-    } else {
-      const data = await res.json();
-      setError(data.error || "Bir hata oluştu");
-      setLoading(false);
-    }
+    })
+      .then((r) => {
+        if (r.ok) {
+          router.push("/admin/products");
+          router.refresh();
+        } else {
+          return r.json().then((d) => {
+            setError(d.error || "Bir hata oluştu");
+            setLoading(false);
+          });
+        }
+      })
+      .catch(() => {
+        setError("Bir hata oluştu");
+        setLoading(false);
+      });
   }
 
   return (
@@ -225,18 +307,6 @@ export function ProductForm({
 
           <div>
             <label className="mb-1 block text-sm font-medium">
-              Görseller (URL, virgülle ayırın)
-            </label>
-            <input
-              value={form.images}
-              onChange={(e) => setForm({ ...form, images: e.target.value })}
-              placeholder="https://..."
-              className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-900"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium">
               Renkler (virgülle ayırın)
             </label>
             <input
@@ -281,10 +351,88 @@ export function ProductForm({
         </div>
       </div>
 
+      {/* Görsel Yükleme */}
+      <div>
+        <label className="mb-2 block text-sm font-medium">Görseller</label>
+
+        {/* Mevcut görsel önizlemeleri */}
+        {imageUrls.length > 0 && (
+          <div className="mb-3 flex flex-wrap gap-3">
+            {imageUrls.map((url, i) => (
+              <div key={i} className="group relative h-24 w-24 overflow-hidden rounded-lg border">
+                <img
+                  src={url}
+                  alt={`Görsel ${i + 1}`}
+                  className="h-full w-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'><rect width='24' height='24' rx='4'/><text x='12' y='16' text-anchor='middle' font-size='10'>?</text></svg>";
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => removeImage(i)}
+                  className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] text-white opacity-0 transition group-hover:opacity-100"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Drop zone */}
+        <div
+          ref={dragRef}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onClick={() => fileInputRef.current?.click()}
+          className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition ${
+            isDragging
+              ? "border-blue-500 bg-blue-500/10"
+              : "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500"
+          }`}
+        >
+          {uploading ? (
+            <div className="flex flex-col items-center gap-2">
+              <svg className="h-8 w-8 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+              </svg>
+              <span className="text-sm text-gray-500">Yükleniyor...</span>
+            </div>
+          ) : (
+            <>
+              <svg className="mb-2 h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span className="text-sm text-gray-500">
+                {isDragging ? "Bırakın..." : "Görsel eklemek için tıklayın veya sürükleyin"}
+              </span>
+              <span className="mt-1 text-xs text-gray-400">JPG, PNG, WebP, SVG - max 5MB</span>
+            </>
+          )}
+        </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/svg+xml"
+          multiple
+          className="hidden"
+          onChange={(e) => {
+            if (e.target.files && e.target.files.length > 0) {
+              handleImageUpload(e.target.files);
+              e.target.value = "";
+            }
+          }}
+        />
+      </div>
+
       <div className="flex items-center gap-3">
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || uploading}
           className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
           {loading ? "Kaydediliyor..." : isEdit ? "Güncelle" : "Oluştur"}
