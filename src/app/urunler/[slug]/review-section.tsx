@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { GlassCard } from "@/components/glass-card";
 
 interface Review {
   id: string;
@@ -54,85 +55,112 @@ export function ReviewSection({ productId }: { productId: string }) {
   }
 
   return (
-    <div className="mt-12 border-t pt-8">
-      <h2 className="mb-6 text-xl font-bold">Yorumlar</h2>
+    <div>
+      <h2 className="mb-8 text-2xl font-bold text-white">Yorumlar</h2>
 
       {/* Average rating */}
-      {reviews.length > 0 && (
-        <div className="mb-6 flex items-center gap-3 text-sm">
-          <span className="text-2xl font-bold text-yellow-500">{avgRating}</span>
-          <span className="text-yellow-500">{starsDisplay(Math.round(parseFloat(avgRating || "0")))}</span>
-          <span className="text-gray-500">({reviews.length} yorum)</span>
-        </div>
+      {reviews.length > 0 && avgRating && (
+        <GlassCard glowColor="rgba(250, 204, 21, 0.06)">
+          <div className="flex items-center gap-4 p-5">
+            <span className="text-4xl font-bold text-yellow-400">{avgRating}</span>
+            <div>
+              <div className="text-lg text-yellow-400">
+                {starsDisplay(Math.round(parseFloat(avgRating)))}
+              </div>
+              <span className="text-sm text-gray-500">({reviews.length} yorum)</span>
+            </div>
+          </div>
+        </GlassCard>
       )}
 
       {/* Review list */}
-      <div className="mb-8 space-y-4">
+      <div className="mb-8 mt-6 space-y-4">
         {reviews.length === 0 ? (
-          <p className="text-sm text-gray-500">Henüz yorum yapılmamış.</p>
+          <p className="py-8 text-center text-sm text-gray-500">Henüz yorum yapılmamış.</p>
         ) : (
           reviews.map((review) => (
-            <div key={review.id} className="rounded-lg border bg-white p-4 dark:bg-gray-950">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-yellow-500 text-sm">{starsDisplay(review.rating)}</span>
-                  <span className="text-sm font-medium">{review.user.name || "Anonim"}</span>
+            <GlassCard key={review.id} glowColor="rgba(255,255,255,0.03)">
+              <div className="p-5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-600/20 text-xs font-medium text-cyan-300">
+                      {(review.user.name || "A")[0].toUpperCase()}
+                    </div>
+                    <span className="text-sm font-medium text-gray-200">
+                      {review.user.name || "Anonim"}
+                    </span>
+                    <span className="text-sm text-yellow-400">{starsDisplay(review.rating)}</span>
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    {new Date(review.createdAt).toLocaleDateString("tr-TR")}
+                  </span>
                 </div>
-                <span className="text-xs text-gray-400">
-                  {new Date(review.createdAt).toLocaleDateString("tr-TR")}
-                </span>
+                {review.comment && (
+                  <p className="mt-3 text-sm leading-relaxed text-gray-400">{review.comment}</p>
+                )}
               </div>
-              {review.comment && (
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{review.comment}</p>
-              )}
-            </div>
+            </GlassCard>
           ))
         )}
       </div>
 
       {/* Review form */}
       {session?.user ? (
-        <form onSubmit={handleSubmit} className="rounded-lg border bg-white p-4 dark:bg-gray-950">
-          <h3 className="mb-3 font-semibold">Yorum Yap</h3>
+        <GlassCard glowColor="rgba(56, 189, 248, 0.06)">
+          <form onSubmit={handleSubmit} className="p-5">
+            <h3 className="mb-4 font-semibold text-white">Yorum Yap</h3>
 
-          <div className="mb-3 flex items-center gap-1">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                type="button"
-                onClick={() => setRating(star)}
-                className={`text-2xl ${star <= rating ? "text-yellow-500" : "text-gray-300"}`}
+            <div className="mb-4 flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  className={`text-2xl transition hover:scale-110 ${
+                    star <= rating ? "text-yellow-400" : "text-gray-600"
+                  }`}
+                >
+                  {star <= rating ? "★" : "☆"}
+                </button>
+              ))}
+            </div>
+
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Yorumunuz (isteğe bağlı)"
+              rows={3}
+              maxLength={1000}
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition focus:border-cyan-500/50"
+            />
+
+            {message && (
+              <p
+                className={`mt-3 text-sm ${
+                  message.includes("alındı") ? "text-emerald-400" : "text-red-400"
+                }`}
               >
-                {star <= rating ? "★" : "☆"}
-              </button>
-            ))}
-          </div>
+                {message}
+              </p>
+            )}
 
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Yorumunuz (isteğe bağlı)"
-            rows={3}
-            maxLength={1000}
-            className="w-full rounded-lg border px-3 py-2 text-sm dark:bg-gray-900"
-          />
-
-          {message && (
-            <p className={`mt-2 text-sm ${message.includes("alındı") ? "text-green-600" : "text-red-600"}`}>
-              {message}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-3 rounded-lg bg-blue-600 px-6 py-2 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? "Gönderiliyor..." : "Gönder"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-2.5 text-sm font-medium text-white shadow-lg shadow-cyan-500/20 transition hover:shadow-cyan-500/40 disabled:opacity-50"
+            >
+              {loading ? "Gönderiliyor..." : "Gönder"}
+            </button>
+          </form>
+        </GlassCard>
       ) : (
-        <p className="text-sm text-gray-500">Yorum yapmak için giriş yapmalısınız.</p>
+        <GlassCard glowColor="rgba(255,255,255,0.03)">
+          <div className="p-5 text-center">
+            <p className="text-sm text-gray-500">
+              Yorum yapmak için giriş yapmalısınız.
+            </p>
+          </div>
+        </GlassCard>
       )}
     </div>
   );

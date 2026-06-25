@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
+import { AnimatedBackground } from "@/components/animated-background";
 import { Header } from "./header";
 import { Footer } from "./footer";
 import "./globals.css";
@@ -52,12 +53,15 @@ export default function RootLayout({
       lang="tr"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
-        <SessionProvider>
-          <Header />
-          <main className="flex flex-1 flex-col">{children}</main>
-          <Footer />
-        </SessionProvider>
+      <body className="relative flex min-h-full flex-col">
+        <AnimatedBackground />
+        <div className="relative z-10 flex flex-1 flex-col">
+          <SessionProvider>
+            <Header />
+            <main className="flex flex-1 flex-col">{children}</main>
+            <Footer />
+          </SessionProvider>
+        </div>
       </body>
     </html>
   );

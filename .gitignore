@@ -47,3 +47,4 @@ next-env.d.ts
 
 # opencode session files
 .omo/
+.vercel
