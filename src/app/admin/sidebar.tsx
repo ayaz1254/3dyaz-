@@ -16,6 +16,11 @@ const navItems = [
     icon: "📦",
   },
   {
+    label: "Blog",
+    href: "/admin/blog",
+    icon: "📝",
+  },
+  {
     label: "Kategoriler",
     href: "/admin/categories",
     icon: "📁",
