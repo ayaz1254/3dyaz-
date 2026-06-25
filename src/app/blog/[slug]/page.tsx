@@ -5,22 +5,25 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { GlassCard } from "@/components/glass-card";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { useEffect, useState } from "react";
 
-interface BlogPost {
+interface BlogPostDetail {
+  id: string;
   title: string;
-  date: string;
-  category: string;
-  readTime: string;
-  content: string[];
-  image: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  image: string | null;
+  category: string | null;
+  author: string | null;
+  published: boolean;
+  createdAt: string;
 }
 
-const posts: Record<string, BlogPost> = {
+const fallbackData: Record<string, { title: string; content: string[]; image: string; category: string }> = {
   "3d-baski-teknolojisi-nedir": {
     title: "3D Baskı Teknolojisi Nedir? Nasıl Çalışır?",
-    date: "15 Mayıs 2024",
     category: "Teknoloji",
-    readTime: "5 dk",
     image: "/images/blog/3d-baski-teknolojisi.svg",
     content: [
       "3D baskı, dijital bir modeli katman katman ekleyerek fiziksel bir nesneye dönüştüren üretim teknolojisidir. Geleneksel üretim yöntemlerinin aksine, 3D baskıda malzeme eksiltme yerine ekleme yapılır, bu da minimum atık anlamına gelir.",
@@ -33,9 +36,7 @@ const posts: Record<string, BlogPost> = {
   },
   "pla-vs-petg-vs-abs": {
     title: "PLA vs PETG vs ABS: Doğru Filament Seçimi",
-    date: "8 Mayıs 2024",
     category: "Malzeme",
-    readTime: "7 dk",
     image: "/images/blog/filament-rehberi.svg",
     content: [
       "3D baskı dünyasına adım attığınızda karşınıza çıkan ilk büyük karar: Hangi filament türünü kullanmalıyım? PLA, PETG ve ABS en yaygın kullanılan üç filament türüdür ve her birinin kendine özgü avantajları vardır.",
@@ -47,9 +48,7 @@ const posts: Record<string, BlogPost> = {
   },
   "3d-baski-ozel-hediye-fikirleri": {
     title: "3D Baskı ile Özel Hediye Fikirleri",
-    date: "1 Mayıs 2024",
     category: "İlham",
-    readTime: "4 dk",
     image: "/images/blog/hediye-fikirleri.svg",
     content: [
       "Sevdiklerinize verebileceğiniz en anlamlı hediyeler, onlar için özel olarak tasarlanmış ve üretilmiş olanlardır. 3D baskı teknolojisi, kişiselleştirilmiş hediyeler oluşturmak için harika fırsatlar sunar.",
@@ -62,9 +61,7 @@ const posts: Record<string, BlogPost> = {
   },
   "fdm-vs-sla-karsilastirmasi": {
     title: "FDM vs SLA: Hangisi Sizin İçin Uygun?",
-    date: "24 Nisan 2024",
     category: "Teknoloji",
-    readTime: "6 dk",
     image: "/images/blog/fdm-vs-sla.svg",
     content: [
       "3D baskı denilince akla gelen iki ana teknoloji vardır: FDM (Fused Deposition Modeling) ve SLA (Stereolithography). Her iki teknoloji de katmanlı üretim yapmakla birlikte, çalışma prensipleri ve sonuç ürünler oldukça farklıdır.",
@@ -75,9 +72,7 @@ const posts: Record<string, BlogPost> = {
   },
   "ucretsiz-3d-modelleme-yazilimlari": {
     title: "3D Modelleme İçin En İyi Ücretsiz Yazılımlar",
-    date: "17 Nisan 2024",
     category: "Eğitim",
-    readTime: "5 dk",
     image: "/images/blog/3d-modelleme-yazilimlari.svg",
     content: [
       "3D modelleme dünyasına adım atmak için yüksek bütçelere ihtiyacınız yok. İşte tamamen ücretsiz, profesyonel kalitede 3D modelleme yapabileceğiniz en iyi yazılımlar.",
@@ -89,9 +84,7 @@ const posts: Record<string, BlogPost> = {
   },
   "basarili-3d-baski-icin-ipuclari": {
     title: "3D Baskıda Başarılı Çıktı İçin 10 İpucu",
-    date: "10 Nisan 2024",
     category: "İpucu",
-    readTime: "6 dk",
     image: "/images/blog/baski-ipuclari.svg",
     content: [
       "3D baskıda başarılı sonuçlar almak için bilmeniz gereken en önemli ipuçlarını sizler için derledik. İster yeni başlayın ister deneyimli olun, bu ipuçları baskı kalitenizi artıracaktır.",
@@ -111,9 +104,27 @@ const posts: Record<string, BlogPost> = {
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
-  const post = posts[slug];
+  const [post, setPost] = useState<BlogPostDetail | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!post) {
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`/api/blog?slug=${encodeURIComponent(slug)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: BlogPostDetail | null) => {
+        if (data) {
+          setPost(data);
+        } else {
+          setPost(null);
+        }
+      })
+      .catch(() => setPost(null))
+      .finally(() => setLoading(false));
+  }, [slug]);
+
+  const fallback = slug ? fallbackData[slug] : null;
+
+  if (!loading && !post && !fallback) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center px-4">
         <div className="mb-6 text-6xl">🔍</div>
@@ -128,6 +139,11 @@ export default function BlogPostPage() {
       </div>
     );
   }
+
+  const displayTitle = post?.title || fallback?.title || "";
+  const displayCategory = post?.category || fallback?.category || "Genel";
+  const displayImage = post?.image || fallback?.image || "/images/blog/default.svg";
+  const contentLines = fallback?.content || (post?.content ? post.content.split("\n").filter(Boolean) : []);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -154,8 +170,8 @@ export default function BlogPostPage() {
             className="overflow-hidden rounded-2xl border border-white/10"
           >
             <img
-              src={post.image}
-              alt={post.title}
+              src={displayImage}
+              alt={displayTitle}
               className="h-[300px] w-full object-cover md:h-[400px]"
             />
           </motion.div>
@@ -172,24 +188,42 @@ export default function BlogPostPage() {
           >
             <div className="mb-6 flex flex-wrap items-center gap-3">
               <span className="rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-400">
-                {post.category}
+                {displayCategory}
               </span>
-              <span className="text-xs text-gray-500">{post.date}</span>
-              <span className="text-xs text-gray-500">· {post.readTime} okuma</span>
+              {post?.createdAt && (
+                <span className="text-xs text-gray-500">
+                  {new Date(post.createdAt).toLocaleDateString("tr-TR", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </span>
+              )}
+              {post?.author && (
+                <span className="text-xs text-gray-500">· {post.author}</span>
+              )}
             </div>
 
             <h1 className="mb-8 text-3xl font-bold text-white md:text-4xl">
-              {post.title}
+              {displayTitle}
             </h1>
           </motion.div>
 
-          <div className="space-y-5">
-            {post.content.map((paragraph, i) => (
-              <ScrollReveal key={i} delay={i * 0.05}>
-                <p className="leading-relaxed text-gray-300">{paragraph}</p>
-              </ScrollReveal>
-            ))}
-          </div>
+          {loading ? (
+            <div className="animate-pulse space-y-4">
+              {[1, 2, 3, 4].map((n) => (
+                <div key={n} className="h-4 w-full rounded bg-white/10" />
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-5">
+              {contentLines.map((paragraph, i) => (
+                <ScrollReveal key={i} delay={i * 0.05}>
+                  <p className="leading-relaxed text-gray-300">{paragraph}</p>
+                </ScrollReveal>
+              ))}
+            </div>
+          )}
 
           {/* Share / CTA */}
           <ScrollReveal delay={0.3}>
