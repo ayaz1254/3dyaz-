@@ -374,12 +374,12 @@ export function HomeClient({ featuredProducts, categories }: Props) {
                     <p className="mb-6 text-gray-400">Fotoğraftan 3D baskı</p>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3 text-center">
-                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-400">599 ₺</p>
-                        <p className="text-xs text-gray-500">Küçük (10cm)</p>
+                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-400">150 ₺</p>
+                        <p className="text-xs text-gray-500">Tasarım / saat</p>
                       </div>
                       <div className="rounded-xl border border-white/5 bg-white/[0.03] px-4 py-3 text-center">
-                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-400">999 ₺</p>
-                        <p className="text-xs text-gray-500">Orta (15cm)</p>
+                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-400">80 ₺</p>
+                        <p className="text-xs text-gray-500">Baskı / saat</p>
                       </div>
                     </div>
                   </div>

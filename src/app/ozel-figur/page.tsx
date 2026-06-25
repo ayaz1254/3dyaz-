@@ -29,9 +29,9 @@ const steps = [
 ];
 
 const pricing = [
-  { size: "Küçük (10 cm)", price: "599 ₺", time: "5-7 iş günü", popular: false },
-  { size: "Orta (15 cm)", price: "999 ₺", time: "7-10 iş günü", popular: true },
-  { size: "Büyük (25 cm)", price: "1.899 ₺", time: "10-14 iş günü", popular: false },
+  { size: "Tasarım & Model Hazırlık", price: "150 ₺ / saat", time: "AI + manuel rötuş", popular: false },
+  { size: "3D Baskı (Premium Reçine)", price: "80 ₺ / saat", time: "Yüksek çözünürlük, SLA", popular: true },
+  { size: "Bitirme & Boyama", price: "120 ₺ / saat", time: "Zımpara, astar, boyama", popular: false },
 ];
 
 const features = [
@@ -64,11 +64,11 @@ const faq = [
   },
   {
     q: "Fiyatlar neleri kapsıyor?",
-    a: "Belirtilen fiyatlar model oluşturma, 3D baskı, zımparalama ve temel boyama işlemlerini kapsar. Özel boya ve kaplama talepleri ek ücrete tabidir.",
+    a: "Saatlik fiyatlandırma, yapılan işin süresine göre hesaplanır. Tasarım, baskı ve bitirme aşamaları ayrı ayrı saatlik ücretlendirilir. Özel boya ve kaplama talepleri ek ücrete tabidir.",
   },
   {
     q: "Siparişimi ne zaman alırım?",
-    a: "Ortalama teslimat süresi 7-10 iş günüdür. Modelin karmaşıklığına ve seçilen boyuta göre bu süre değişebilir.",
+    a: "Ortalama teslimat süresi 7-10 iş günüdür. Modelin karmaşıklığına ve baskı süresine göre bu süre değişebilir.",
   },
   {
     q: "İade yapabilir miyim?",
@@ -176,7 +176,7 @@ export default function OzelFigurPage() {
           <div className="mx-auto max-w-7xl">
             <div className="mb-14 text-center">
               <h2 className="text-3xl font-bold text-white">Fiyatlandırma</h2>
-              <p className="mt-2 text-gray-400">İhtiyacına uygun boyutu seç</p>
+              <p className="mt-2 text-gray-400">Saatlik esnek fiyatlandırma, sadece ihtiyacın kadar öde</p>
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {pricing.map((p, i) => (
@@ -201,9 +201,9 @@ export default function OzelFigurPage() {
                       <p className="mb-4 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-400">
                         {p.price}
                       </p>
-                      <p className="mb-6 text-sm text-gray-500">Teslimat: {p.time}</p>
+                      <p className="mb-6 text-sm text-gray-500">{p.time}</p>
                       <a
-                        href={`https://wa.me/905555555555?text=Merhaba,%20${encodeURIComponent(p.size)}%20boyutunda%20%C3%B6zel%20fig%C3%BCr%20sipari%C5%9Fi%20vermek%20istiyorum.`}
+                        href={`https://wa.me/905555555555?text=Merhaba,%20${encodeURIComponent(p.size)}%20hizmetiniz%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`block w-full rounded-full py-2.5 text-sm font-medium transition ${
