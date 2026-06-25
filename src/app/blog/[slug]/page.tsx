@@ -21,7 +21,7 @@ const posts: Record<string, BlogPost> = {
     date: "15 Mayıs 2024",
     category: "Teknoloji",
     readTime: "5 dk",
-    image: "https://placehold.co/1200x600/0a0a0f/cyan?text=3D+Baski+Teknolojisi",
+    image: "/images/blog/3d-baski-teknolojisi.svg",
     content: [
       "3D baskı, dijital bir modeli katman katman ekleyerek fiziksel bir nesneye dönüştüren üretim teknolojisidir. Geleneksel üretim yöntemlerinin aksine, 3D baskıda malzeme eksiltme yerine ekleme yapılır, bu da minimum atık anlamına gelir.",
       "Teknoloji, 1980'lerde ortaya çıkmış olmasına rağmen son yıllarda maliyetlerin düşmesi ve malzeme çeşitliliğinin artmasıyla birlikte hem endüstriyel hem de hobi amaçlı kullanımda büyük bir patlama yaşamıştır.",
@@ -36,7 +36,7 @@ const posts: Record<string, BlogPost> = {
     date: "8 Mayıs 2024",
     category: "Malzeme",
     readTime: "7 dk",
-    image: "https://placehold.co/1200x600/0a0a0f/cyan?text=Filament+Karsilastirmasi",
+    image: "/images/blog/filament-rehberi.svg",
     content: [
       "3D baskı dünyasına adım attığınızda karşınıza çıkan ilk büyük karar: Hangi filament türünü kullanmalıyım? PLA, PETG ve ABS en yaygın kullanılan üç filament türüdür ve her birinin kendine özgü avantajları vardır.",
       "PLA (Polilaktik Asit): En kolay baskı yapılan filament türüdür. Mısır nişastası gibi yenilenebilir kaynaklardan üretilir, biyolojik olarak parçalanabilir ve baskı sırasında neredeyse hiç koku çıkarmaz. Düşük sıcaklıkta (190-220°C) baskı yapılır ve yatak ısıtması gerektirmez. Mekanik dayanımı orta düzeydedir ve UV ışınlarına karşı hassastır.",
@@ -50,7 +50,7 @@ const posts: Record<string, BlogPost> = {
     date: "1 Mayıs 2024",
     category: "İlham",
     readTime: "4 dk",
-    image: "https://placehold.co/1200x600/0a0a0f/cyan?text=Hediye+Fikirleri",
+    image: "/images/blog/hediye-fikirleri.svg",
     content: [
       "Sevdiklerinize verebileceğiniz en anlamlı hediyeler, onlar için özel olarak tasarlanmış ve üretilmiş olanlardır. 3D baskı teknolojisi, kişiselleştirilmiş hediyeler oluşturmak için harika fırsatlar sunar.",
       "Fotoğraftan Heykelcik: En popüler 3D baskı hediye seçeneği. Sevdiklerinizin fotoğraflarından 3D model çıkararak gerçekçi heykelcikler yaptırabilirsiniz. Doğum günü, yıldönümü veya özel anılar için mükemmel bir seçenek.",
@@ -65,7 +65,7 @@ const posts: Record<string, BlogPost> = {
     date: "24 Nisan 2024",
     category: "Teknoloji",
     readTime: "6 dk",
-    image: "https://placehold.co/1200x600/0a0a0f/cyan?text=FDM+vs+SLA",
+    image: "/images/blog/fdm-vs-sla.svg",
     content: [
       "3D baskı denilince akla gelen iki ana teknoloji vardır: FDM (Fused Deposition Modeling) ve SLA (Stereolithography). Her iki teknoloji de katmanlı üretim yapmakla birlikte, çalışma prensipleri ve sonuç ürünler oldukça farklıdır.",
       "FDM, eritilmiş filamentin bir nozuldan katman katman biriktirilmesi prensibiyle çalışır. En yaygın ve ekonomik 3D baskı teknolojisidir. PLA, PETG, ABS, TPU gibi geniş malzeme seçeneği sunar. Mekanik dayanımı yüksektir ancak yüzey kalitesi SLA kadar iyi değildir.",
@@ -78,7 +78,7 @@ const posts: Record<string, BlogPost> = {
     date: "17 Nisan 2024",
     category: "Eğitim",
     readTime: "5 dk",
-    image: "https://placehold.co/1200x600/0a0a0f/cyan?text=3D+Modelleme+Yazilimlari",
+    image: "/images/blog/3d-modelleme-yazilimlari.svg",
     content: [
       "3D modelleme dünyasına adım atmak için yüksek bütçelere ihtiyacınız yok. İşte tamamen ücretsiz, profesyonel kalitede 3D modelleme yapabileceğiniz en iyi yazılımlar.",
       "Blender: Açık kaynaklı 3D modelleme dünyasının tartışmasız lideri. Modelleme, heykel, animasyon, render ve video düzenleme gibi her şeyi tek bir pakette sunar. Öğrenme eğrisi dik olsa da, sonsuz olanaklar sunar.",
@@ -92,7 +92,7 @@ const posts: Record<string, BlogPost> = {
     date: "10 Nisan 2024",
     category: "İpucu",
     readTime: "6 dk",
-    image: "https://placehold.co/1200x600/0a0a0f/cyan?text=Baski+Ipuclari",
+    image: "/images/blog/baski-ipuclari.svg",
     content: [
       "3D baskıda başarılı sonuçlar almak için bilmeniz gereken en önemli ipuçlarını sizler için derledik. İster yeni başlayın ister deneyimli olun, bu ipuçları baskı kalitenizi artıracaktır.",
       "1. İlk katman kritiktir: İlk katmanın yapışması, tüm baskının başarısını belirler. Yatak seviyenizi mutlaka doğru ayarlayın ve ilk katman hızını düşürün.",

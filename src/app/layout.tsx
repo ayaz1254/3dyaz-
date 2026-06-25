@@ -22,24 +22,51 @@ export const metadata: Metadata = {
     template: "%s | 3D Magza",
   },
   description:
-    "3D baskı teknolojisiyle üretilmiş özel tasarım ürünler. Kendi 3D modelinizi yükleyin, size özel basalım.",
+    "3D baskı teknolojisiyle üretilmiş özel tasarım ürünler. STL dosyanı yükle, size özel 3D basalım. Fotoğraftan 3D figür, özel heykelcik ve hediyelik eşya üretimi.",
+  keywords: [
+    "3D baskı",
+    "3D yazıcı",
+    "özel figür",
+    "fotoğraftan heykel",
+    "STL yükle",
+    "3D model",
+    "hediyelik eşya",
+    "PLA baskı",
+    "kişiye özel hediye",
+    "3D Magza",
+  ],
+  authors: [{ name: "3D Magza" }],
+  creator: "3D Magza",
+  publisher: "3D Magza",
+  metadataBase: new URL("https://3dmagza.com"),
   openGraph: {
     title: "3D Magza - 3D Baskı Ürünleri",
     description:
-      "3D baskı teknolojisiyle üretilmiş özel tasarım ürünler. Kendi 3D modelinizi yükleyin, size özel basalım.",
+      "3D baskı teknolojisiyle üretilmiş özel tasarım ürünler. Kendi modelini yükle, fotoğrafından 3D figür yapalım.",
     type: "website",
     locale: "tr_TR",
     siteName: "3D Magza",
+    url: "https://3dmagza.com",
   },
   twitter: {
     card: "summary_large_image",
     title: "3D Magza - 3D Baskı Ürünleri",
     description:
-      "3D baskı teknolojisiyle üretilmiş özel tasarım ürünler. Kendi 3D modelinizi yükleyin, size özel basalım.",
+      "3D baskı teknolojisiyle üretilmiş özel tasarım ürünler. Kendi modelini yükle, fotoğrafından 3D figür yapalım.",
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
   },
 };
 
@@ -49,10 +76,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="tr"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+      <html
+        lang="tr"
+        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      >
+        <head>
+          <meta name="theme-color" content="#0a0a0f" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </head>
       <body className="relative flex min-h-full flex-col">
         <AnimatedBackground />
         <div className="relative z-10 flex flex-1 flex-col">

@@ -10,7 +10,7 @@ const posts = [
     title: "3D Baskı Teknolojisi Nedir? Nasıl Çalışır?",
     excerpt:
       "3D baskı teknolojisinin temel prensiplerini, kullanılan malzemeleri ve endüstriyel uygulamalarını detaylıca inceliyoruz.",
-    image: "https://placehold.co/800x500/0a0a0f/cyan?text=3D+Baski+Teknolojisi",
+    image: "/images/blog/3d-baski-teknolojisi.svg",
     date: "15 Mayıs 2024",
     category: "Teknoloji",
     readTime: "5 dk",
@@ -20,7 +20,7 @@ const posts = [
     title: "PLA vs PETG vs ABS: Doğru Filament Seçimi",
     excerpt:
       "Projeniz için en uygun filament türünü seçmenize yardımcı olacak kapsamlı bir rehber. PLA, PETG ve ABS filamentlerinin karşılaştırması.",
-    image: "https://placehold.co/800x500/0a0a0f/cyan?text=Filament+Rehberi",
+    image: "/images/blog/filament-rehberi.svg",
     date: "8 Mayıs 2024",
     category: "Malzeme",
     readTime: "7 dk",
@@ -30,7 +30,7 @@ const posts = [
     title: "3D Baskı ile Özel Hediye Fikirleri",
     excerpt:
       "Sevdikleriniz için 3D baskı ile hazırlayabileceğiniz yaratıcı ve kişiselleştirilmiş hediye fikirlerini keşfedin.",
-    image: "https://placehold.co/800x500/0a0a0f/cyan?text=Hediye+Fikirleri",
+    image: "/images/blog/hediye-fikirleri.svg",
     date: "1 Mayıs 2024",
     category: "İlham",
     readTime: "4 dk",
@@ -40,7 +40,7 @@ const posts = [
     title: "FDM vs SLA: Hangisi Sizin İçin Uygun?",
     excerpt:
       "İki popüler 3D baskı teknolojisini karşılaştırıyoruz: FDM (filament) ve SLA (reçine). Hangisi ihtiyaçlarınıza daha uygun?",
-    image: "https://placehold.co/800x500/0a0a0f/cyan?text=FDM+vs+SLA",
+    image: "/images/blog/fdm-vs-sla.svg",
     date: "24 Nisan 2024",
     category: "Teknoloji",
     readTime: "6 dk",
@@ -50,7 +50,7 @@ const posts = [
     title: "3D Modelleme İçin En İyi Ücretsiz Yazılımlar",
     excerpt:
       "Hiçbir ücret ödemeden 3D modelleme yapabileceğiniz en iyi ücretsiz yazılımları ve başlangıç rehberini sizler için derledik.",
-    image: "https://placehold.co/800x500/0a0a0f/cyan?text=3D+Yazilim",
+    image: "/images/blog/3d-modelleme-yazilimlari.svg",
     date: "17 Nisan 2024",
     category: "Eğitim",
     readTime: "5 dk",
@@ -60,7 +60,7 @@ const posts = [
     title: "3D Baskıda Başarılı Çıktı İçin 10 İpucu",
     excerpt:
       "İlk 3D baskı deneyiminizden en iyi sonucu almak için bilmeniz gereken 10 önemli ipucu ve püf noktası.",
-    image: "https://placehold.co/800x500/0a0a0f/cyan?text=Baski+Ipuclari",
+    image: "/images/blog/baski-ipuclari.svg",
     date: "10 Nisan 2024",
     category: "İpucu",
     readTime: "6 dk",

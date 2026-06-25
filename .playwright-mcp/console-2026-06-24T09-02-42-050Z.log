@@ -1,0 +1,154 @@
+[     626ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://3dmagza-fy8axyzyn-3d-magza.vercel.app/:0
+[    1942ms] [LOG] %c
+▲
+
+    ____                               _ __
+   / __ \________  ____ _____ ___     (_) /_
+  / / / / ___/ _ \/ __ `/ __ `__ \   / / __/
+ / /_/ / /  /  __/ /_/ / / / / / /  / / /__
+/_____/_/   \___/\__,_/_/ /_/ /_/  /_/\__( )
+   _____ __    _          _ __           |/
+  / ___// /_  (_)___     (_) /_
+  \__ \/ __ \/ / __ \   / / __/
+ ___/ / / / / / /_/ /  / / /_
+/____/_/ /_/_/ .___/  /_/\__/
+            /_/
+  
+
+Hello!
+
+- Open Source https://vercel.com/oss
+- Careers https://vercel.com/careers
+- Status https://vercel-status.com
+
+ font-family: "Geist Mono", monospace; white-space: pre; line-height: 1; @ https://vercel.com/_next/static/immutable/chunks/09cizcx7bxmnn.js:78
+[    2447ms] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment @ https://accounts.google.com/gsi/client:86
+[    2452ms] [ERROR] Not signed in with the identity provider. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[    2655ms] [WARNING] Deprecated API for given entry type. @ https://vercel.com/_next/static/immutable/chunks/30boi8e69jjip.js:18
+[    2659ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://vercel.com/api/jwt:0
+[    2857ms] [ERROR] Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID @ https://o205439.ingest.sentry.io/api/1323670/envelope/?sentry_key=d00780d432ac4ccf882f60dd02062e14&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.111.0:0
+[    6100ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3l1vkaiao2o7o.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[    6100ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1777f8dhtch_9.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[    6100ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1_-gzlz1lfys2.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[    6100ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3le8_cf_uuakm.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[    7210ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with AbortError: signal is aborted without reason @ https://vercel.com/_next/static/immutable/chunks/3k2wuun0vfmla.js:8
+[    7354ms] [ERROR] Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID @ https://o205439.ingest.sentry.io/api/1323670/envelope/?sentry_key=d00780d432ac4ccf882f60dd02062e14&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.111.0:0
+[    9757ms] [ERROR] Failed to load resource: the server responded with a status of 422 () @ https://collector.github.com/github/collect:0
+[    9775ms] [ERROR] Failed to load resource: the server responded with a status of 422 () @ https://collector.github.com/github/collect:0
+[   13660ms] [ERROR] Failed to load resource: the server responded with a status of 422 () @ https://collector.github.com/github/collect:0
+[   15708ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://appleid.apple.com/auth/authorize?client_id=com.github.social-oidc&redirect_uri=https%3A%2F%2Fgithub.com%2Fsessions%2Fsocial%2Fapple%2Fcallback&nonce=7238ca7b48f113394bb6866b09e401ec&state=b87fee5cbb590c6ad8ca5d86dcaa51c5&scope=email&response_mode=form_post&response_type=code:0
+[   26412ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://github.com/login?client_id=Iv1.9d7d662ea00b8481&return_to=%2Flogin%2Foauth%2Fauthorize%3Fclient_id%3DIv1.9d7d662ea00b8481%26scope%3Dread%253Auser%252Cuser%253Aemail%26state%3D0b0f01dc4494c494b93fe45e8796ba628246408be813a043b0b8f4b4e4f98b7fd564599e75674adac61414ba5c7e99c3dd734e7c868b236929cf92e71c8874104c02f555702c1639db0930947499eee92ad8d76ed56c8d4a8748400c68521c1a0e4156c136cc2164929a8560c691522c4e4a12d23824e17b70d167694655991233639dd2395ad0776ab375d99064a28ab94de416f55d64bb5d4c112547db70e34b113c1e89f8a81e9bf9e0ae5020dea6097ca903ac04d14175f5ec039b8b8a460df9ed802c07a0a30e6353f2fc566e6204c84beef61154f7e4fa5b33848ae390bc3b247b69aa9b6a5d1c29052d1a37dbb9315c56528a688e93e429428b323b77ca816aeb32ac445dd4b383d4600c7ba2e9adbf611093dd5c82ef2110d0afb41e71352b603ae14ce3f7e769bd04e65a13df90a20e8e1ba91aff7b852a37768600b7992191a2c2af1129e8b23dc6e3e699333d08cabfab6b8498716638b5d2fcae7407b6663a0a107e60470b648ad40451c916c32051713de8a6c939dd37d5e71d9f3076b65660913bd637a19a2991226dc2da868eed21ba71b607296cee764561fe0bd38117e0c1695b2ead14ae64b7026320f65442bdb9fa2961d98c397825c9fd15afecff007e85547b2a8acfd434e818a51f1c128394dddf1522f44999a043499348292fb6803d572c9b46bdd0e69691d05f67d6d749f190eff1579aab85154fda746b58b362c8d8288a1ec9d7d18ef2dcad82b53484e81217ecbe1fdcb8d827962c902130ccdcd7f524519a59c81a3b:0
+[   27456ms] [LOG] %c
+▲
+
+ _____ _              _                    _   _             __
+|_   _| |__   ___    / \   __ _  ___ _ __ | |_(_) ___       / /
+  | | | '_ \ / _ \  / _ \ / _` |/ _ \ '_ \| __| |/ __|     / /
+  | | | | | |  __/ / ___ \ (_| |  __/ | | | |_| | (__     /_/
+  |_| |_| |_|\___|/_/   \_\__, |\___|_| |_|\__|_|\___|    (_)
+                           |___/
+ ___        __               _                   _                 _
+|_ _|_ __  / _|_ __ __ _ ___| |_ _ __ _   _  ___| |_ _   _ _ __ ___
+ | || '_ \| |_| '__/ _` / __| __| '__| | | |/ __| __| | | | '__/ _ \
+ | || | | |  _| | | (_| \__ \ |_| |  | |_| | (__| |_| |_| | | |  __/
+|___|_| |_|_| |_|  \__,_|___/\__|_|   \__,_|\___|\__|\__,_|_|  \___|
+  
+
+Hello!
+
+- Open Source https://vercel.com/oss
+- Careers https://vercel.com/careers
+- Status https://vercel-status.com
+
+ font-family: "Geist Mono", monospace; white-space: pre; line-height: 1; @ https://vercel.com/_next/static/immutable/chunks/09cizcx7bxmnn.js:78
+[   28034ms] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment @ https://accounts.google.com/gsi/client:86
+[   28039ms] [ERROR] Not signed in with the identity provider. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   28247ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://vercel.com/api/jwt:0
+[   28436ms] [WARNING] Deprecated API for given entry type. @ https://vercel.com/_next/static/immutable/chunks/30boi8e69jjip.js:18
+[   31452ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3l1vkaiao2o7o.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   31452ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1777f8dhtch_9.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   31452ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1_-gzlz1lfys2.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   31452ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3le8_cf_uuakm.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   32000ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with NetworkError: Error retrieving a token. @ https://vercel.com/_next/static/immutable/chunks/3k2wuun0vfmla.js:8
+[   35162ms] [ERROR] Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID @ https://o205439.ingest.sentry.io/api/1323670/envelope/?sentry_key=d00780d432ac4ccf882f60dd02062e14&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.111.0:0
+[   38058ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://github.com/login?client_id=Iv1.9d7d662ea00b8481&return_to=%2Flogin%2Foauth%2Fauthorize%3Fclient_id%3DIv1.9d7d662ea00b8481%26scope%3Dread%253Auser%252Cuser%253Aemail%26state%3D083c01f519ff3698d1de77af80eeee05e3d6bbb28f68b241c2f6f299a02fc62ad7aad6f57bb768bbee3156e7be155d6e05ac49799f75042ce25a3533c2744a076aa648042e13bbb839b416ae907e190a0ec6991b514f6390fd28ed0ff9e78671f90f95afacd792475e22749a2abbd7e3d8d9bc670173c2fbc1e45eec6549c9a673a96b93ca7c4cba88bb869e65e9c7dd7db11d0df684f9d0a1c2586f5f5d268b8fbc5e58f8f595415994b64a079d23da7e9da509861b84528a988185f623b4611203a3a05b82c70e484a60a933795f957745a6ef8b631c3e579d3f6d51297cc2a403d09997952c569319ac549e661492932b993d62de58c349a64b28521a8257f5fd525073adbd0523a5661426bb8fd42694ba70dc9952817f70060574a4ebf002f155c09e53f2083db32583df5cf5f0211015810e16b599a3ca65db803b811ac5ce69047b72462031de9fb8bc9bf54d1edafc27193e62637fb03e11c944db2d85950585b5b7af839eb869c3aeb447bf7f07ee8d4341c2179ac726f82d36c8dcf7a7a31d1a53ac26ac23c82a58a518e7602abcf271713f5f86263e732f2a73cbe0abe642477d82614b66c5c38b86d3008802706b1f314b1d1da49807f7f78ae2fd9d14d9576693a641e6c96fdbf1ff97f19007f14a74a2cb0ed2654c2a3a2fceff7d5f9f091253c9b0fc23bacf1d964e4d51b2809eb0f2dbfc9a463e47683a69e833b52dfd5dc8c7ae8302b33d41048dfbaee6965d40240a9c0adef8955201cc4ff48c5cf93a9e12138e2fe43216b68bcc:0
+[   57009ms] [LOG] %c
+▲
+
+ _____ _              _                    _   _             __
+|_   _| |__   ___    / \   __ _  ___ _ __ | |_(_) ___       / /
+  | | | '_ \ / _ \  / _ \ / _` |/ _ \ '_ \| __| |/ __|     / /
+  | | | | | |  __/ / ___ \ (_| |  __/ | | | |_| | (__     /_/
+  |_| |_| |_|\___|/_/   \_\__, |\___|_| |_|\__|_|\___|    (_)
+                           |___/
+ ___        __               _                   _                 _
+|_ _|_ __  / _|_ __ __ _ ___| |_ _ __ _   _  ___| |_ _   _ _ __ ___
+ | || '_ \| |_| '__/ _` / __| __| '__| | | |/ __| __| | | | '__/ _ \
+ | || | | |  _| | | (_| \__ \ |_| |  | |_| | (__| |_| |_| | | |  __/
+|___|_| |_|_| |_|  \__,_|___/\__|_|   \__,_|\___|\__|\__,_|_|  \___|
+  
+
+Hello!
+
+- Open Source https://vercel.com/oss
+- Careers https://vercel.com/careers
+- Status https://vercel-status.com
+
+ font-family: "Geist Mono", monospace; white-space: pre; line-height: 1; @ https://vercel.com/_next/static/immutable/chunks/09cizcx7bxmnn.js:78
+[   57187ms] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment @ https://accounts.google.com/gsi/client:86
+[   57192ms] [ERROR] Not signed in with the identity provider. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   57432ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://vercel.com/api/jwt:0
+[   57561ms] [WARNING] Deprecated API for given entry type. @ https://vercel.com/_next/static/immutable/chunks/30boi8e69jjip.js:18
+[   59117ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_TIMED_OUT @ https://o205439.ingest.sentry.io/api/1323670/envelope/?sentry_key=d00780d432ac4ccf882f60dd02062e14&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.111.0:0
+[   61109ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with AbortError: signal is aborted without reason @ https://vercel.com/_next/static/immutable/chunks/3k2wuun0vfmla.js:8
+[   63349ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://accounts.google.com/v3/signin/identifier?opparams=%253F&dsh=S-1056599720%3A1782255837056079&client_id=258013614557-nema0dumfbottebi6to7aqi85qot9pvs.apps.googleusercontent.com&o2v=2&redirect_uri=https%3A%2F%2Fvercel.com%2Fapi%2Fregistration%2Fgoogle%2Fcallback&response_type=code&scope=openid+profile+email&service=lso&state=e8d7913d5b647aad2917572afb6ba279b9d273bb08cea1139f20126124afc284b256615f33838b0ef257ff4981576bc2b39514a63aaa86da87cedd07327e0f02596813f6364cb54c18e2923ab88a17dec1a93f9a76c162027aa4492e002c0b7f53a1b23162a376ea8b5da2228559e1941699944a086aa5d7b6bd78f1d992f8d47b534502c995149c7f49db3b8934b8bfc6c2a522797ba21bef67cc04fe683759f38d0f19dd2228c4763e5b323f7df33371cf2ea8163b18a64043fa1f56cc2bfc41a7da316dd41e59c47c77cbb9578a500b32c42d1dda63232b9b04cce6753a3c77751c044028dc2814e113a962fa9949d4533b0cf83942ffea49932e48abd98c6a068da23e42a98555fa26d0c2b61698865d80d089ed4cbcf70bf933389a855ee1070ac62cb1b401dccfb4e738e947960b6f7d2b87fe6dd3489a52ded556b75f3e00a39118eb464fc44aeb9c69dd96ecbf3ac47b3fe1a9f6c8eabe261c2f0cd4ae581819229363f774882309fe23c34387af7bd3bd35f1d5343661297959557aa3c5ec32a345a672498fbb3254eead40dfa9a806fe11e2c134b917bf2a2798ed00a06266ec1e3d9db5535678ab1ffe0163fe3965b9a4adb487fe49c5e18b922890fc6e6abca055936006ea65380f02e1bab32300d3a37f66f87ba6f4798e5a47b0ed374f0f4afc32f3bd9a3b7d3edf1d6b7c761109624d2e6a7ef29bc38a3b211572b64b4f96ec5c69d08a5669c12255b32e&flowName=GeneralOAuthFlow&continue=https%3A%2F%2Faccounts.google.com%2Fsignin%2Foauth%2Fconsent%3Fauthuser%3Dunknown%26part%3DAJi8hAMD_XehqvAerUoJ4o0z8syRvzoFMaQcDJsebtnSb1msX2ys7wZ56_9jftUgalV77YENEsdd9a57vELaCkqd5pS2B7FHV2AIVDTNVCQIrrFcxPHsX0UIfqeszoSYz-0hPnutxA3QHjVrrNvcsnke3wnjfryAOy9Ne_qaTTSihHflf1CiomGpQUZRZbexUrA3NBJTSixjGykyQIbpoEYpFgVfS9aaBn_vYlboXR7j6W0b2tQGeeR8uXD3kNX4tIGU3hA2INo_2AotHinzly5UFwlUVYIXdqAx7tzOIhKuiS26l93KVneaZfJNtycAlSDK22bzUKwK72czv4TZggb47H21GQogNaJfPmLyi5ZjG-i5bWGJZZIpL3ECPb9LWNC28Ug2gy5ZR3iVVfmuyVAxnoeRqdLA5wEyA1Sb8H5UqjOQDEmNDMIekDAeJnPcO03vka96yyxf_1gFV5Obr_hp3gi12ckXIA%26flowName%3DGeneralOAuthFlow%26as%3DS-1056599720%253A1782255837056079%26client_id%3D258013614557-nema0dumfbottebi6to7aqi85qot9pvs.apps.googleusercontent.com%26requestPath%3D%252Fsignin%252Foauth%252Fconsent%23&app_domain=https%3A%2F%2Fvercel.com&rart=ANgoxccVOn3-hu-3CIUAcgVrQL_dWI6ps3K-S-qrpi_MTDo5KQ9wuDJvI8a2gkYdflYp_9a3fF7Pqib4ESKD5rbhB_6xzQ0xRDUTlLzl_vTZo1DdZQ3klpA:0
+[   63355ms] [LOG] %c%s color: red; background: yellow; font-size: 24px; UYARI! @ https://www.gstatic.com/_/mss/boq-identity/_/js/k=boq-identity.AccountsSignInUi.tr.9Wt3vGBWGJY.es5.O/am=EQ0AAAAwULyQAcD-_28AAAIIsh3wPQugCRAyAAAAAAAAAABgAQAAGgE/d=1/excm=_b,_tp,identifierview/ed=1/dg=0/wt=2/ujg=1/rs=AOaEmlEUkkdcG4WpncVUlmKJLEcx5TPEzg/dti=1/m=_b,_tp:551
+[   63355ms] [LOG] %c%s font-size: 18px; Bu konsolu kullanmak, saldırganların kimliğinize bürünmelerine ve Self-XSS adı verilen bir saldırıyı kullanarak bilgilerinizi çalmalarına olanak tanıyabilir.
+Anlamadığınız bir kodu girmeyin veya yapıştırmayın. @ https://www.gstatic.com/_/mss/boq-identity/_/js/k=boq-identity.AccountsSignInUi.tr.9Wt3vGBWGJY.es5.O/am=EQ0AAAAwULyQAcD-_28AAAIIsh3wPQugCRAyAAAAAAAAAABgAQAAGgE/d=1/excm=_b,_tp,identifierview/ed=1/dg=0/wt=2/ujg=1/rs=AOaEmlEUkkdcG4WpncVUlmKJLEcx5TPEzg/dti=1/m=_b,_tp:551
+[   84917ms] [LOG] %c
+▲
+
+__  __                                     _            __
+\ \/ /___  __  __   _________ _____       (_)_  _______/ /_
+ \  / __ \/ / / /  / ___/ __ `/ __ \     / / / / / ___/ __/
+ / / /_/ / /_/ /  / /__/ /_/ / / / /    / / /_/ (__  ) /_
+/_/\____/\__,_/   \___/\__,_/_/ /_/  __/ /\__,_/____/\__/
+         __    _          __  __    /___/
+   _____/ /_  (_)___     / /_/ /_  (_)___  ____ ______
+  / ___/ __ \/ / __ \   / __/ __ \/ / __ \/ __ `/ ___/
+ (__  ) / / / / /_/ /  / /_/ / / / / / / / /_/ (__  )
+/____/_/ /_/_/ .___/   \__/_/ /_/_/_/ /_/\__, /____/
+            /_/                         /____/
+  
+
+Hello!
+
+- Open Source https://vercel.com/oss
+- Careers https://vercel.com/careers
+- Status https://vercel-status.com
+
+ font-family: "Geist Mono", monospace; white-space: pre; line-height: 1; @ https://vercel.com/_next/static/immutable/chunks/09cizcx7bxmnn.js:78
+[   85104ms] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment @ https://accounts.google.com/gsi/client:86
+[   85109ms] [ERROR] Not signed in with the identity provider. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   85433ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://vercel.com/api/jwt:0
+[   85476ms] [WARNING] Deprecated API for given entry type. @ https://vercel.com/_next/static/immutable/chunks/30boi8e69jjip.js:18
+[   88485ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3l1vkaiao2o7o.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   88485ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1777f8dhtch_9.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   88485ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1_-gzlz1lfys2.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   88485ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3le8_cf_uuakm.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   94403ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with NetworkError: Error retrieving a token. @ https://vercel.com/_next/static/immutable/chunks/3k2wuun0vfmla.js:8
+[   94989ms] [ERROR] Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID @ https://o205439.ingest.sentry.io/api/1323670/envelope/?sentry_key=d00780d432ac4ccf882f60dd02062e14&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.111.0:0
+[   98542ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3l1vkaiao2o7o.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   98542ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1777f8dhtch_9.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   98542ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1_-gzlz1lfys2.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[   98542ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3le8_cf_uuakm.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[  100147ms] [ERROR] Failed to load resource: net::ERR_CERT_AUTHORITY_INVALID @ https://o205439.ingest.sentry.io/api/1323670/envelope/?sentry_key=d00780d432ac4ccf882f60dd02062e14&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.111.0:0
+[  103151ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3l1vkaiao2o7o.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[  103151ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1777f8dhtch_9.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[  103151ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1_-gzlz1lfys2.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[  103151ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3le8_cf_uuakm.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[  106508ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_TIMED_OUT @ https://o205439.ingest.sentry.io/api/1323670/envelope/?sentry_key=d00780d432ac4ccf882f60dd02062e14&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.111.0:0
+[  109512ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3l1vkaiao2o7o.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[  109512ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1777f8dhtch_9.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[  109512ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/1_-gzlz1lfys2.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
+[  109512ms] [WARNING] The resource https://vercel.com/_next/static/immutable/chunks/3le8_cf_uuakm.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252F3dmagza-fy8axyzyn-3d-magza.vercel.app%252F%26nonce%3D1dd79cc91f0cfa95e767c0fb629f758896b148350dead860e8277815e7755609:0
