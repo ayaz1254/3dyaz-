@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" width="400" height="280">
+  <defs>
+    <linearGradient id="bg-grad-satranctakimiortacag-0" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#0f3460"/>
+    </linearGradient>
+    <filter id="glow-0">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="200" height="140" rx="12" fill="url(#bg-grad-satranctakimiortacag-0)"/>
+  
+      <!-- Piece 1 -->
+      <rect x="54" y="88" width="12" height="3" rx="2" fill="#d4a373" opacity="0.7"/>
+      <path d="M60 88 L55 84 L56 80 L60 77 L64 80 L65 84 Z" fill="#d4a373" opacity="0.9"/>
+      
+    
+      <!-- Piece 2 -->
+      <rect x="76.6" y="81.2" width="16.8" height="4.2" rx="2" fill="#d4a373" opacity="0.7"/>
+      <path d="M85 81.2 L78 75.6 L79.4 70 L85 65.8 L90.6 70 L92 75.6 Z" fill="#d4a373" opacity="0.9"/>
+      
+    
+      <!-- Piece 3 -->
+      <rect x="109.5" y="74" width="21" height="5.25" rx="2" fill="#d4a373" opacity="0.7"/>
+      <path d="M120 74 L111.25 67 L113 60 L120 54.75 L127 60 L128.75 67 Z" fill="#faedcd" opacity="0.9"/>
+      <circle cx="120" cy="53" r="4.2" fill="gold" opacity="0.8"/>
+        <line x1="120" y1="48.8" x2="120" y2="44.25" stroke="gold" stroke-width="1.5" opacity="0.6"/>
+        <line x1="116" y1="46.7" x2="124" y2="46.7" stroke="gold" stroke-width="1" opacity="0.6"/>
+    
+      <rect x="45" y="100" width="90" height="8" rx="2" fill="#d4a373" opacity="0.3"/>
+    
+  <!-- Subtle grid overlay -->
+  <g opacity="0.05">
+    <line x1="0" y1="0" x2="0" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="20" y1="0" x2="20" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="40" y1="0" x2="40" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="60" y1="0" x2="60" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="80" y1="0" x2="80" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="100" y1="0" x2="100" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="120" y1="0" x2="120" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="140" y1="0" x2="140" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="160" y1="0" x2="160" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="180" y1="0" x2="180" y2="140" stroke="#fff" stroke-width="0.5"/>
+    <line x1="0" y1="0" x2="200" y2="0" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="20" x2="200" y2="20" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="40" x2="200" y2="40" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="60" x2="200" y2="60" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="80" x2="200" y2="80" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="100" x2="200" y2="100" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="120" x2="200" y2="120" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="140" x2="200" y2="140" stroke="#fff" stroke-width="0.5"/>
+  </g>
+  <!-- Label -->
+  <text x="100" y="130" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="8" font-family="sans-serif">satranc takimi ortacag</text>
+</svg>

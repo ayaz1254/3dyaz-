@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
-import { AnimatedBackground } from "@/components/animated-background";
+import { PwaRegister } from "@/components/pwa-register";
+import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { Header } from "./header";
 import { Footer } from "./footer";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -76,23 +75,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html
-        lang="tr"
-        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-      >
-        <head>
-          <meta name="theme-color" content="#0a0a0f" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-        </head>
+    <html
+      lang="tr"
+      className={`${inter.variable} ${GeistMono.variable} h-full antialiased`}
+    >
+      <head>
+        <meta name="theme-color" content="#05cc47" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="3D Magza" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.svg" />
+        <link rel="manifest" href="/manifest" />
+      </head>
       <body className="relative flex min-h-full flex-col">
-        <div className="pointer-events-none fixed inset-0 z-[1] bg-dot-grid-subtle opacity-50" />
-        <AnimatedBackground />
+        {/* Subtle grid overlay — less intrusive than the 3D background */}
+        <div className="pointer-events-none fixed inset-0 z-[1] bg-[radial-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:24px_24px]" />
         <div className="relative z-10 flex flex-1 flex-col">
           <SessionProvider>
             <Header />
-            <main className="flex flex-1 flex-col">{children}</main>
+            <main className="flex flex-1 flex-col pb-16 md:pb-0">{children}</main>
             <Footer />
+            <MobileBottomNav />
           </SessionProvider>
+          <PwaRegister />
+          <PwaInstallPrompt />
         </div>
       </body>
     </html>

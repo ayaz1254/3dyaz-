@@ -12,7 +12,7 @@ export default async function AdminProductsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Ürünler</h1>
+        <h1 className="text-2xl font-bold">Mağaza</h1>
         <Link
           href="/admin/products/new"
           className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"

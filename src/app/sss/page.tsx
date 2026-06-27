@@ -225,7 +225,7 @@ export default function SSSCPage() {
                     <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-green-400 to-emerald-500 transition group-hover:translate-x-0" />
                   </a>
                   <Link
-                    href="/urunler"
+                    href="/magaza"
                     className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 font-medium text-white backdrop-blur-sm transition hover:border-white/40"
                   >
                     Ürünlere Göz At

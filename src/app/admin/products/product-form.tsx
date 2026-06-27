@@ -70,6 +70,10 @@ export function ProductForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [modelUploading, setModelUploading] = useState(false);
+  const modelInputRef = useRef<HTMLInputElement>(null);
+  const modelDragRef = useRef<HTMLDivElement>(null);
+  const [isModelDragging, setIsModelDragging] = useState(false);
 
   const handleImageUpload = useCallback(async (files: FileList | File[]) => {
     setUploading(true);
@@ -132,6 +136,63 @@ export function ProductForm({
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
+  }, []);
+
+  const handleModelUpload = useCallback(async (files: FileList | File[]) => {
+    const file = Array.from(files)[0];
+    if (!file) return;
+
+    const ext = file.name.split(".").pop()?.toLowerCase() || "";
+    if (!["stl", "obj", "3mf"].includes(ext)) {
+      setError("Sadece STL, OBJ veya 3MF dosyası yükleyebilirsiniz.");
+      return;
+    }
+
+    setModelUploading(true);
+    setError("");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+      if (res.ok) {
+        const data = await res.json();
+        setForm((prev) => ({ ...prev, fileUrl: data.url }));
+      } else {
+        const err = await res.json();
+        setError(err.error || "Yükleme başarısız");
+      }
+    } catch {
+      setError("Dosya yüklenemedi");
+    }
+
+    setModelUploading(false);
+  }, []);
+
+  const removeModelFile = useCallback(() => {
+    setForm((prev) => ({ ...prev, fileUrl: "" }));
+  }, []);
+
+  const handleModelDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsModelDragging(false);
+      if (e.dataTransfer.files.length > 0) {
+        handleModelUpload(e.dataTransfer.files);
+      }
+    },
+    [handleModelUpload]
+  );
+
+  const handleModelDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsModelDragging(true);
+  }, []);
+
+  const handleModelDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsModelDragging(false);
   }, []);
 
   function handleSubmit(e: React.FormEvent) {
@@ -340,11 +401,65 @@ export function ProductForm({
 
           {form.isDigital && (
             <div>
-              <label className="mb-1 block text-sm font-medium">Dosya URL</label>
+              <label className="mb-1 block text-sm font-medium">3D Model Dosyası (STL/OBJ/3MF)</label>
+              {form.fileUrl ? (
+                <div className="flex items-center gap-3 rounded-lg border p-3">
+                  <svg className="h-8 w-8 flex-shrink-0 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="min-w-0 flex-1 truncate text-sm">{form.fileUrl}</span>
+                  <button
+                    type="button"
+                    onClick={removeModelFile}
+                    className="flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-[10px] text-white hover:bg-red-700"
+                  >
+                    ×
+                  </button>
+                </div>
+              ) : null}
+              <div
+                ref={modelDragRef}
+                onDrop={handleModelDrop}
+                onDragOver={handleModelDragOver}
+                onDragLeave={handleModelDragLeave}
+                onClick={() => modelInputRef.current?.click()}
+                className={`mt-2 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 transition ${
+                  isModelDragging
+                    ? "border-cyan-500 bg-cyan-500/10"
+                    : "border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500"
+                }`}
+              >
+                {modelUploading ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <svg className="h-8 w-8 animate-spin text-cyan-500" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                    </svg>
+                    <span className="text-sm text-gray-500">Yükleniyor...</span>
+                  </div>
+                ) : (
+                  <>
+                    <svg className="mb-2 h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                    </svg>
+                    <span className="text-sm text-gray-500">
+                      {isModelDragging ? "Bırakın..." : "3D model yüklemek için tıklayın veya sürükleyin"}
+                    </span>
+                    <span className="mt-1 text-xs text-gray-400">STL, OBJ, 3MF - max 50MB</span>
+                  </>
+                )}
+              </div>
               <input
-                value={form.fileUrl}
-                onChange={(e) => setForm({ ...form, fileUrl: e.target.value })}
-                className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-900"
+                ref={modelInputRef}
+                type="file"
+                accept=".stl,.obj,.3mf,model/stl,model/obj,application/vnd.ms-pki.stl"
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    handleModelUpload(e.target.files);
+                    e.target.value = "";
+                  }
+                }}
               />
             </div>
           )}

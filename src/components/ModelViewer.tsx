@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState, useRef } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -11,25 +11,69 @@ interface ModelViewerProps {
   url: string;
   className?: string;
   style?: React.CSSProperties;
+  modelColor?: string;
 }
 
-export default function ModelViewer({ url, className, style }: ModelViewerProps) {
+function ModelCanvas({ url, color }: { url: string; color?: string }) {
   return (
-    <div
-      className={className}
-      style={{ width: "100%", height: 400, background: "#f5f5f5", borderRadius: 12, overflow: "hidden", ...style }}
-    >
-      <Canvas camera={{ position: [3, 3, 5], fov: 45 }}>
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[5, 10, 5]} intensity={0.8} />
-        <directionalLight position={[-5, -3, -5]} intensity={0.2} />
-        <Suspense fallback={<LoadingPlaceholder />}>
-          <ModelLoader url={url} />
-        </Suspense>
-        <OrbitControls enablePan enableZoom autoRotate={false} />
-        <gridHelper args={[3, 20, "#999", "#ccc"]} />
-      </Canvas>
-    </div>
+    <Canvas camera={{ position: [3, 3, 5], fov: 45 }}>
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[5, 10, 5]} intensity={0.8} />
+      <directionalLight position={[-5, -3, -5]} intensity={0.2} />
+      <Suspense fallback={<LoadingPlaceholder />}>
+        <ModelLoader url={url} color={color} />
+      </Suspense>
+      <OrbitControls enablePan enableZoom autoRotate autoRotateSpeed={0.8} />
+      <gridHelper args={[3, 20, "#999", "#ccc"]} />
+    </Canvas>
+  );
+}
+
+export default function ModelViewer({ url, className, style, modelColor }: ModelViewerProps) {
+  const [fullscreen, setFullscreen] = useState(false);
+
+  const toggleFullscreen = useCallback(() => {
+    setFullscreen((f) => !f);
+  }, []);
+
+  return (
+    <>
+      {/* Normal view */}
+      <div
+        className={className}
+        style={{ position: "relative", width: "100%", background: "#111", borderRadius: 12, overflow: "hidden", ...style }}
+      >
+            <ModelCanvas url={url} color={modelColor} />
+        {/* Tam Ekran butonu */}
+        <button
+          onClick={toggleFullscreen}
+          className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-black/50 px-3 py-1.5 text-xs text-white/80 backdrop-blur-sm transition hover:bg-black/70 hover:text-white"
+        >
+          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+          <span className="hidden sm:inline">Tam Ekran</span>
+        </button>
+      </div>
+
+      {/* Fullscreen overlay */}
+      {fullscreen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
+          <div style={{ width: "100vw", height: "100vh" }}>
+        <ModelCanvas url={url} color={modelColor} />
+          </div>
+          <button
+            onClick={toggleFullscreen}
+            className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20"
+            aria-label="Tam Ekran Kapat"
+          >
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -42,7 +86,7 @@ function LoadingPlaceholder() {
   );
 }
 
-function ModelLoader({ url }: { url: string }) {
+function ModelLoader({ url, color }: { url: string; color?: string }) {
   const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -106,7 +150,7 @@ function ModelLoader({ url }: { url: string }) {
   return (
     <mesh geometry={geometry} castShadow receiveShadow>
       <meshStandardMaterial
-        color="#7c9eff"
+        color={color || "#7c9eff"}
         metalness={0.15}
         roughness={0.65}
         side={THREE.DoubleSide}

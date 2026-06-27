@@ -3,8 +3,14 @@ import { auth } from "@/lib/auth";
 import path from "path";
 import { writeFile, mkdir } from "fs/promises";
 
-const ALLOWED_TYPES = [".jpg", ".jpeg", ".png", ".webp", ".svg"];
-const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const IMAGE_TYPES = [".jpg", ".jpeg", ".png", ".webp", ".svg"];
+const MODEL_TYPES = [".stl", ".obj", ".3mf"];
+const ALLOWED_TYPES = [...IMAGE_TYPES, ...MODEL_TYPES];
+const MAX_SIZE = 50 * 1024 * 1024; // 50MB
+
+function isModelFile(ext: string) {
+  return MODEL_TYPES.includes(ext);
+}
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -23,26 +29,27 @@ export async function POST(req: NextRequest) {
     const ext = path.extname(file.name).toLowerCase();
     if (!ALLOWED_TYPES.includes(ext)) {
       return NextResponse.json(
-        { error: "Geçersiz dosya türü. JPG, PNG, WebP veya SVG yükleyin." },
+        { error: "Geçersiz dosya türü. JPG, PNG, WebP, SVG, STL, OBJ veya 3MF yükleyin." },
         { status: 400 }
       );
     }
 
     if (file.size > MAX_SIZE) {
       return NextResponse.json(
-        { error: "Dosya 5MB'dan küçük olmalıdır" },
+        { error: "Dosya 50MB'dan küçük olmalıdır" },
         { status: 400 }
       );
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const uploadDir = path.join(process.cwd(), "public/uploads/images");
+    const subDir = isModelFile(ext) ? "models" : "images";
+    const uploadDir = path.join(process.cwd(), `public/uploads/${subDir}`);
     await mkdir(uploadDir, { recursive: true });
     const uniqueName = `${Date.now()}-${crypto.randomUUID().split("-")[0]}${ext}`;
     const filePath = path.join(uploadDir, uniqueName);
     await writeFile(filePath, buffer);
 
-    return NextResponse.json({ url: `/uploads/images/${uniqueName}` }, { status: 201 });
+    return NextResponse.json({ url: `/uploads/${subDir}/${uniqueName}`, isModel: isModelFile(ext) }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Dosya yüklenemedi" }, { status: 500 });
   }

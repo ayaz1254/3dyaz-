@@ -5,9 +5,14 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { AddToCartButton } from "./add-to-cart";
 import { DynamicModelViewer } from "@/components/dynamic-model-viewer";
+import { ProductImages } from "@/components/product-images";
 import { ReviewSection } from "./review-section";
 import { GlassCard } from "@/components/glass-card";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { WishlistButton } from "@/components/wishlist-button";
+import { StockNotify } from "@/components/stock-notify";
+import { RecentlyViewedTracker } from "@/components/recently-viewed-tracker";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -53,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: images.length > 0 ? [images[0]] : [],
     },
     alternates: {
-      canonical: `/urunler/${slug}`,
+      canonical: `/magaza/${slug}`,
     },
   };
 }
@@ -93,7 +98,7 @@ export default async function ProductDetailPage({ params }: Props) {
       price: Number(product.price),
       priceCurrency: "TRY",
       availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      url: `${process.env.NEXT_PUBLIC_APP_URL || ""}/urunler/${product.slug}`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL || ""}/magaza/${product.slug}`,
     },
     ...(product.category?.name ? { category: product.category.name } : {}),
   };
@@ -106,78 +111,39 @@ export default async function ProductDetailPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Breadcrumb */}
-      <nav className="mb-10 flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/" className="transition hover:text-white">Ana Sayfa</Link>
-        <span>/</span>
-        <Link href="/urunler" className="transition hover:text-white">Ürünler</Link>
-        {product.category && (
-          <>
-            <span>/</span>
-            <Link
-              href={`/urunler?category=${product.category.slug}`}
-              className="transition hover:text-white"
-            >
-              {product.category.name}
-            </Link>
-          </>
-        )}
-        <span>/</span>
-        <span className="text-gray-300">{product.name}</span>
-      </nav>
+      <Breadcrumbs items={[
+        { label: "Mağaza", href: "/magaza" },
+        ...(product.category ? [        { label: product.category.name, href: `/magaza?category=${product.category.slug}` }] : []),
+        { label: product.name },
+      ]} />
 
       {/* Product */}
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-        {/* Images */}
+        {/* 3D Model + Images */}
         <div>
-          {images[0] ? (
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-gray-800/30">
-              <img
-                src={images[0]}
-                alt={product.name}
-                className="w-full object-cover transition duration-700 hover:scale-105"
+          {/* 3D Model Preview — ön planda, mobilde küçük */}
+          {product.fileUrl && /\.(stl|obj|3mf)$/i.test(product.fileUrl) && (
+            <div className="mb-6">
+              <h3 className="mb-2 text-sm font-semibold uppercase tracking-widest text-gray-400">
+                3D Model
+              </h3>
+              <DynamicModelViewer
+                url={product.fileUrl}
+                className="h-64 sm:h-80 lg:h-96"
               />
-            </div>
-          ) : (
-            <div className="flex aspect-square items-center justify-center rounded-2xl border border-white/10 bg-gray-800/30">
-              <div className="flex flex-col items-center gap-2 text-gray-500">
-                <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span className="text-sm">Görsel Yok</span>
-              </div>
-            </div>
-          )}
-          {images.length > 1 && (
-            <div className="mt-4 flex gap-3">
-              {images.map((img, i) => (
-                <div
-                  key={i}
-                  className="h-20 w-20 overflow-hidden rounded-xl border border-white/10 bg-gray-800/30 transition hover:border-cyan-500/50"
-                >
-                  <img src={img} alt="" className="h-full w-full object-cover" />
-                </div>
-              ))}
             </div>
           )}
 
-          {/* 3D Model Preview */}
-          {product.fileUrl && /\.(stl|obj|3mf)$/i.test(product.fileUrl) && (
-            <div className="mt-8">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-gray-400">
-                3D Model Önizleme
-              </h3>
-              <DynamicModelViewer url={product.fileUrl} />
-            </div>
-          )}
+          {/* Images — modelden sonra */}
+          <ProductImages images={images} productName={product.name} />
         </div>
 
         {/* Info */}
         <div>
           {product.category && (
             <Link
-              href={`/urunler?category=${product.category.slug}`}
-              className="mb-3 inline-block rounded-full bg-cyan-500/10 px-4 py-1 text-xs font-medium text-cyan-300 transition hover:bg-cyan-500/20"
+               href={`/magaza?category=${product.category.slug}`}
+              className="mb-3 inline-block rounded-full bg-[#05cc47]/10 px-4 py-1 text-xs font-medium text-[#05cc47] transition hover:bg-[#05cc47]/20"
             >
               {product.category.name}
             </Link>
@@ -188,7 +154,7 @@ export default async function ProductDetailPage({ params }: Props) {
           </h1>
 
           <div className="mb-6 flex items-baseline gap-4">
-            <span className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-400">
+            <span className="text-4xl font-bold text-[#05cc47]">
               {Number(product.price).toFixed(2)} ₺
             </span>
             {product.comparePrice && Number(product.comparePrice) > Number(product.price) && (
@@ -203,7 +169,7 @@ export default async function ProductDetailPage({ params }: Props) {
           )}
 
           {/* Specs */}
-          <GlassCard glowColor="rgba(56, 189, 248, 0.06)">
+          <GlassCard glowColor="rgba(5, 204, 71, 0.06)">
             <div className="space-y-4 p-5">
               {product.material && (
                 <div className="flex items-center justify-between border-b border-white/5 pb-3">
@@ -238,7 +204,7 @@ export default async function ProductDetailPage({ params }: Props) {
             </div>
           </GlassCard>
 
-          <div className="mt-6">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <AddToCartButton
               productId={product.id}
               name={product.name}
@@ -247,7 +213,30 @@ export default async function ProductDetailPage({ params }: Props) {
               slug={product.slug}
               disabled={product.stock <= 0}
             />
+            <WishlistButton
+              productId={product.id}
+              name={product.name}
+              price={Number(product.price)}
+              image={images[0] || ""}
+              slug={product.slug}
+            />
           </div>
+
+          {/* Stock notification */}
+          {product.stock <= 0 && (
+            <div className="mt-4">
+              <StockNotify productId={product.id} productName={product.name} />
+            </div>
+          )}
+
+          {/* Recently Viewed Tracker */}
+          <RecentlyViewedTracker
+            productId={product.id}
+            name={product.name}
+            price={Number(product.price)}
+            image={images[0] || ""}
+            slug={product.slug}
+          />
 
           {/* Description */}
           {product.description && (
@@ -270,14 +259,14 @@ export default async function ProductDetailPage({ params }: Props) {
       {relatedProducts.length > 0 && (
         <section className="mt-20">
           <h2 className="mb-8 text-2xl font-bold text-white">Benzer Ürünler</h2>
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {relatedProducts.map((rp, i) => {
               const rpImages: string[] = JSON.parse(rp.images || "[]");
               return (
                 <ScrollReveal key={rp.id} delay={i * 0.08} direction="up">
-                  <Link href={`/urunler/${rp.slug}`} className="group block">
-                    <GlassCard glowColor="rgba(56, 189, 248, 0.06)" hover3d>
-                      <div className="aspect-square overflow-hidden rounded-xl bg-gray-800/50">
+                  <Link href={`/magaza/${rp.slug}`} className="group block">
+                    <GlassCard glowColor="rgba(5, 204, 71, 0.06)" hover3d>
+                      <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-gray-800/50">
                         {rpImages[0] ? (
                           <img
                             src={rpImages[0]}
@@ -292,11 +281,11 @@ export default async function ProductDetailPage({ params }: Props) {
                           </div>
                         )}
                       </div>
-                      <div className="mt-3 space-y-1">
-                        <h3 className="text-sm font-medium text-white transition-colors group-hover:text-cyan-300">
+                      <div className="mt-2 space-y-0.5">
+                        <h3 className="truncate text-sm font-medium text-white transition-colors group-hover:text-[#05cc47]">
                           {rp.name}
                         </h3>
-                        <p className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-400">
+                        <p className="text-sm font-bold text-[#05cc47]">
                           {Number(rp.price).toFixed(2)} ₺
                         </p>
                       </div>

@@ -313,7 +313,7 @@ export default function OzelFigurPage() {
                     <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-green-400 to-emerald-500 transition group-hover:translate-x-0" />
                   </a>
                   <Link
-                    href="/urunler"
+                    href="/magaza"
                     className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-8 py-3.5 font-semibold text-white backdrop-blur-sm transition hover:border-white/40"
                   >
                     Hazır Ürünlere Göz At

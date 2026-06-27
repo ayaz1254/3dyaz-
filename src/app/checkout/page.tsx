@@ -243,7 +243,7 @@ export default function CheckoutPage() {
     return (
       <div className="mx-auto max-w-2xl px-4 py-20 text-center">
         <p className="mb-4 text-lg text-gray-500">Sepetiniz boş</p>
-        <button onClick={() => router.push("/urunler")} className="text-blue-600 hover:underline">
+        <button onClick={() => router.push("/magaza")} className="text-blue-600 hover:underline">
           Alışverişe Başla
         </button>
       </div>

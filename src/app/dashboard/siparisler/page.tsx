@@ -40,7 +40,7 @@ export default async function CustomerOrdersPage() {
       {orders.length === 0 ? (
         <div className="py-12 text-center text-gray-500">
           <p>Henüz siparişiniz bulunmuyor.</p>
-          <Link href="/urunler" className="mt-2 inline-block text-blue-600 hover:underline">
+          <Link href="/magaza" className="mt-2 inline-block text-blue-600 hover:underline">
             Alışverişe Başla
           </Link>
         </div>

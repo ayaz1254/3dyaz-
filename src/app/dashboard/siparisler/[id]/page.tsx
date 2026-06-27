@@ -100,7 +100,7 @@ export default async function CustomerOrderDetailPage({
                   )}
                   <div className="flex-1 text-sm">
                     <Link
-                      href={`/urunler/${item.product?.slug}`}
+                      href={`/magaza/${item.product?.slug}`}
                       className="font-medium hover:text-blue-600"
                     >
                       {item.product?.name}

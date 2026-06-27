@@ -11,7 +11,7 @@ const navItems = [
     icon: "📊",
   },
   {
-    label: "Ürünler",
+    label: "Mağaza",
     href: "/admin/products",
     icon: "📦",
   },

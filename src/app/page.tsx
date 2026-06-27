@@ -1,32 +1,37 @@
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
 import { HomeClient } from "./home-client";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
-  const [featuredProducts, categories] = await Promise.all([
-    prisma.product.findMany({
-      where: { isPublished: true },
-      include: { category: { select: { name: true, slug: true } } },
-      take: 6,
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.category.findMany({
-      orderBy: { name: "asc" },
-    }),
-  ]);
+interface ProductData {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  comparePrice: number | null;
+  images: string[];
+  material: string | null;
+  colors: string | null;
+  category: { name: string; slug: string } | null;
+  createdAt: string;
+}
 
-  return (
-    <HomeClient
-      featuredProducts={featuredProducts.map((p) => ({
-        ...p,
-        comparePrice: p.comparePrice ?? null,
-        images: JSON.parse(p.images || "[]") as string[],
-        createdAt: p.createdAt.toISOString(),
-        updatedAt: p.updatedAt.toISOString(),
-      }))}
-      categories={categories}
-    />
-  );
+export default async function HomePage() {
+  const rawProducts = await prisma.product.findMany({
+    where: { isPublished: true },
+    include: { category: { select: { name: true, slug: true } } },
+    orderBy: { createdAt: "desc" },
+    take: 8,
+  });
+
+  const products: ProductData[] = rawProducts.map((p) => ({
+    ...p,
+    images: JSON.parse(p.images || "[]"),
+    colors: p.colors || "[]",
+    createdAt: p.createdAt.toISOString(),
+  }));
+
+  const featuredProducts = products.slice(0, 4);
+
+  return <HomeClient products={products} featuredProducts={featuredProducts} />;
 }

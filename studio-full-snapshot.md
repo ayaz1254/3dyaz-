@@ -1,0 +1,283 @@
+- generic [ref=e2]:
+  - main [ref=e3]:
+    - generic [ref=e6]:
+      - navigation [ref=e7]:
+        - link "tripo-logo" [ref=e8] [cursor=pointer]:
+          - /url: https://www.tripo3d.ai/
+          - img "tripo-logo" [ref=e11]
+        - button "3D Çalışma Alanı" [ref=e13] [cursor=pointer]:
+          - link "3D Çalışma Alanı" [ref=e14]:
+            - /url: /workspace/generate
+            - paragraph [ref=e15]: 3D Çalışma Alanı
+        - generic [ref=e18]:
+          - link "Ana Sayfa" [ref=e19] [cursor=pointer]:
+            - /url: /
+            - paragraph [ref=e20]: Ana Sayfa
+          - link "Varlıklar" [ref=e21] [cursor=pointer]:
+            - /url: /assets
+            - paragraph [ref=e22]: Varlıklar
+          - link "Gelir Ortaklığı Programı" [ref=e23] [cursor=pointer]:
+            - /url: https://www.tripo3d.ai/affiliate
+            - paragraph [ref=e24]: Gelir Ortaklığı Programı
+      - generic [ref=e25]:
+        - button "Kaydol / Giriş Yap" [ref=e26] [cursor=pointer]:
+          - generic [ref=e27]: Kaydol / Giriş Yap
+        - button [ref=e28] [cursor=pointer]
+        - generic [ref=e30] [cursor=pointer]:
+          - paragraph [ref=e32]: "?"
+          - button "Yükselt loading" [ref=e33]:
+            - generic [ref=e34]:
+              - text: Yükselt
+              - img "loading" [ref=e36]
+        - button "DCC Bridge" [ref=e37] [cursor=pointer]:
+          - paragraph [ref=e39]: DCC Bridge
+          - region [ref=e40]:
+            - generic [ref=e42]:
+              - group [ref=e43]
+              - group [ref=e45]
+              - group [ref=e47]
+              - group [ref=e49]
+              - group [ref=e51]
+              - group [ref=e53]
+              - group [ref=e55]
+              - group [ref=e57]
+    - generic [ref=e64]:
+      - generic [ref=e312]:
+        - generic [ref=e313]: Kaydolun ve ödüller kazanın
+        - generic [ref=e314]:
+          - generic [ref=e315]:
+            - img "Ultra yüksek kaliteli model oluşturmayı ücretsiz deneyin" [ref=e316]
+            - generic [ref=e317]: Ultra yüksek kaliteli model oluşturmayı ücretsiz deneyin
+          - generic [ref=e318]:
+            - img "Sınıfının en iyisi PBR dokular" [ref=e319]
+            - generic [ref=e320]: Sınıfının en iyisi PBR dokular
+          - generic [ref=e321]:
+            - img "3D pipeline’ınızla sorunsuz entegrasyon" [ref=e322]
+            - generic [ref=e323]: 3D pipeline’ınızla sorunsuz entegrasyon
+        - button "Ücretsiz Başla" [ref=e324] [cursor=pointer]:
+          - generic [ref=e325]: Ücretsiz Başla
+      - generic [ref=e65]:
+        - generic [ref=e66]:
+          - heading "Her Şeyi 3D Olarak Üretin" [level=1] [ref=e67]
+          - paragraph [ref=e68]: Hepsi Bir Arada Yapay Zeka 3D Çalışma Alanınız
+        - generic [ref=e69]:
+          - generic [ref=e70] [cursor=pointer]:
+            - generic [ref=e73]:
+              - heading "Yüksek Detaylı Model" [level=2] [ref=e74]
+              - paragraph [ref=e75]: 3D Baskı ve Görsel Sanatlar için 2 Milyon Poligona Kadar
+            - button "HD Model Üret" [ref=e76]:
+              - generic [ref=e77]: HD Model Üret
+          - generic [ref=e80] [cursor=pointer]:
+            - generic [ref=e83]:
+              - heading "Akıllı Topoloji Ağı" [level=2] [ref=e84]
+              - paragraph [ref=e85]: ~2s | Oyunlar ve Web Uygulamaları İçin Temiz Topoloji
+            - button "Akıllı Ağ Üret" [ref=e86]:
+              - generic [ref=e87]: Akıllı Ağ Üret
+      - generic [ref=e90]:
+        - heading "Galeri" [level=2] [ref=e92]
+        - generic [ref=e93]:
+          - button "Filtrele" [ref=e94] [cursor=pointer]:
+            - paragraph [ref=e97]: Filtrele
+          - group [ref=e100]:
+            - button "Tümü" [pressed] [ref=e101] [cursor=pointer]: Tümü
+            - button "3D Baskı" [ref=e103] [cursor=pointer]: 3D Baskı
+          - group [ref=e109]:
+            - button "Öne Çıkan" [pressed] [ref=e110] [cursor=pointer]: Öne Çıkan
+            - button "Karakter" [ref=e112] [cursor=pointer]: Karakter
+            - button "Araç" [ref=e114] [cursor=pointer]: Araç
+            - button "Hayvan" [ref=e116] [cursor=pointer]: Hayvan
+            - button "Mimari" [ref=e118] [cursor=pointer]: Mimari
+            - button "Mobilya" [ref=e120] [cursor=pointer]: Mobilya
+            - button "Objeler" [ref=e122] [cursor=pointer]: Objeler
+            - button "Silah" [ref=e124] [cursor=pointer]: Silah
+            - button "Kıyafet" [ref=e126] [cursor=pointer]: Kıyafet
+            - button "Makine" [ref=e128] [cursor=pointer]: Makine
+            - button "Yemek" [ref=e130] [cursor=pointer]: Yemek
+            - button "Doğa" [ref=e132] [cursor=pointer]: Doğa
+            - button "Soyut" [ref=e134] [cursor=pointer]: Soyut
+          - generic [ref=e137]:
+            - button "Modelimi Öne Çıkar" [ref=e138] [cursor=pointer]:
+              - generic [ref=e139]: Modelimi Öne Çıkar
+            - paragraph [ref=e141]: "+10"
+        - generic [ref=e326]:
+          - region [ref=e328]:
+            - generic [ref=e330]:
+              - group [ref=e331]:
+                - img "/images/home/s3-3d-rendering-challenge.webp" [ref=e333] [cursor=pointer]
+              - group [ref=e334]:
+                - img "/images/home/discord.webp" [ref=e336] [cursor=pointer]
+              - group [ref=e337]:
+                - img "/images/home/team.webp" [ref=e339] [cursor=pointer]
+              - group [ref=e340]:
+                - img "/images/home/shop-tr.webp" [ref=e342] [cursor=pointer]
+            - generic [ref=e343]:
+              - button [ref=e344] [cursor=pointer]
+              - button [ref=e345] [cursor=pointer]
+              - button [ref=e346] [cursor=pointer]
+              - button [ref=e347] [cursor=pointer]
+          - 'link "world cup mascots #world cup mascots Modeli görüntüle" [ref=e349] [cursor=pointer]':
+            - /url: /3d-model-gallery/world-cup-mascots
+            - img "world cup mascots" [ref=e350]
+            - generic [ref=e143]: "#world cup mascots"
+            - generic [ref=e144]: Modeli görüntüle
+          - generic [ref=e351] [cursor=pointer]:
+            - generic [ref=e352]:
+              - img "To get the absolute best results out of Tripo AI for a highly detailed"
+            - button [ref=e145]
+            - button [ref=e147]
+            - generic [ref=e149]:
+              - paragraph [ref=e151]: FERUL
+              - button "67" [ref=e152]:
+                - paragraph [ref=e154]: "67"
+          - generic [ref=e354] [cursor=pointer]:
+            - generic [ref=e355]:
+              - img "french bulldog in a navy jumpsuit with pockets and boots full body an"
+            - button [ref=e155]
+            - button [ref=e157]
+            - generic [ref=e159]:
+              - paragraph [ref=e161]: Turtlehatz
+              - button "70" [ref=e162]:
+                - paragraph [ref=e164]: "70"
+          - 'link "world cup #world cup Modeli görüntüle" [ref=e358] [cursor=pointer]':
+            - /url: /3d-model-gallery/world-cup
+            - img "world cup" [ref=e359]
+            - generic [ref=e165]: "#world cup"
+            - generic [ref=e166]: Modeli görüntüle
+          - generic [ref=e360] [cursor=pointer]:
+            - generic [ref=e361]:
+              - img "outpost building with radar dish stairs and illuminated console pane"
+            - button [ref=e167]
+            - button [ref=e169]
+            - generic [ref=e171]:
+              - paragraph [ref=e173]: Constantine_Creator
+              - button "19" [ref=e174]:
+                - paragraph [ref=e176]: "19"
+          - generic [ref=e363] [cursor=pointer]:
+            - generic [ref=e364]:
+              - img "anime girl character with teal hair in white and dark blue outfit"
+            - button [ref=e177]
+            - button [ref=e179]
+            - generic [ref=e181]:
+              - paragraph [ref=e183]: Anonymous1767742378
+              - button "89" [ref=e184]:
+                - paragraph [ref=e186]: "89"
+          - generic [ref=e366] [cursor=pointer]:
+            - generic [ref=e367]:
+              - img "dentist figurine toy with navy scrubs beige skin black hair and glas"
+            - button [ref=e187]
+            - button [ref=e189]
+            - generic [ref=e191]:
+              - paragraph [ref=e193]: weDADY
+              - button "38" [ref=e194]:
+                - paragraph [ref=e196]: "38"
+          - generic [ref=e369] [cursor=pointer]:
+            - generic [ref=e370]:
+              - img "colorful graffiti covered street food cart with umbrella and wheels f"
+            - button [ref=e197]
+            - button [ref=e199]
+            - generic [ref=e201]:
+              - paragraph [ref=e203]: Anonymous1780982186
+              - button "44" [ref=e204]:
+                - paragraph [ref=e206]: "44"
+          - 'link "world cup trophy #world cup trophy Modeli görüntüle" [ref=e373] [cursor=pointer]':
+            - /url: /3d-model-gallery/world-cup-trophy
+            - img "world cup trophy" [ref=e374]
+            - generic [ref=e207]: "#world cup trophy"
+            - generic [ref=e208]: Modeli görüntüle
+          - generic [ref=e375] [cursor=pointer]:
+            - generic [ref=e376]:
+              - img "boy character with backpack wearing denim jacket patches shorts and"
+            - button [ref=e209]
+            - button [ref=e211]
+            - generic [ref=e213]:
+              - paragraph [ref=e215]: Anonymous1780982186
+              - button "81" [ref=e216]:
+                - paragraph [ref=e218]: "81"
+          - generic [ref=e378] [cursor=pointer]:
+            - generic [ref=e379]:
+              - img "A Baby marsh Monster composed of matted greenery and mud he s slimy"
+            - button [ref=e219]
+            - button [ref=e221]
+            - generic [ref=e223]:
+              - paragraph [ref=e225]: SteveMcD
+              - button "82" [ref=e226]:
+                - paragraph [ref=e228]: "82"
+          - generic [ref=e381] [cursor=pointer]:
+            - generic [ref=e382]:
+              - img "small dragon hatchling with bright orange body teal fins large yello"
+            - button [ref=e229]
+            - button [ref=e231]
+            - generic [ref=e233]:
+              - paragraph [ref=e235]: Anonymous1753959345
+              - button "91" [ref=e236]:
+                - paragraph [ref=e238]: "91"
+          - generic [ref=e384] [cursor=pointer]:
+            - generic [ref=e385]:
+              - img "tribal shaman wearing fringed brown robes with red sash belt and sta"
+            - button [ref=e239]
+            - button [ref=e241]
+            - generic [ref=e243]:
+              - paragraph [ref=e245]: Aristo Kristandyo
+              - button "44" [ref=e246]:
+                - paragraph [ref=e248]: "44"
+          - generic [ref=e387] [cursor=pointer]:
+            - generic [ref=e388]:
+              - img "dragon head with spiky textured scales in gray and white"
+            - button [ref=e249]
+            - button [ref=e251]
+            - generic [ref=e253]:
+              - paragraph [ref=e255]: Anonymous1780740245
+              - button "65" [ref=e256]:
+                - paragraph [ref=e258]: "65"
+          - generic [ref=e390] [cursor=pointer]:
+            - generic [ref=e391]:
+              - img "A highly detailed closed top Fabergé egg inspired by the 1901 Gatchin"
+            - button [ref=e259]
+            - button [ref=e261]
+            - generic [ref=e263]:
+              - paragraph [ref=e265]: FERUL
+              - button "42" [ref=e266]:
+                - paragraph [ref=e268]: "42"
+          - generic [ref=e393] [cursor=pointer]:
+            - generic [ref=e394]:
+              - img "soccer player wearing Argentina jersey with ball"
+            - button [ref=e269]
+            - button [ref=e271]
+            - generic [ref=e273]:
+              - paragraph [ref=e275]: Anonymous1762923576
+              - button "22" [ref=e276]:
+                - paragraph [ref=e278]: "22"
+          - generic [ref=e396] [cursor=pointer]:
+            - generic [ref=e397]:
+              - img "soccer player wearing Portugal kit with ball on field"
+            - button [ref=e279]
+            - button [ref=e281]
+            - generic [ref=e283]:
+              - paragraph [ref=e285]: Anonymous1762923576
+              - button "44" [ref=e286]:
+                - paragraph [ref=e288]: "44"
+          - 'link "trionda ball #trionda ball Modeli görüntüle" [ref=e400] [cursor=pointer]':
+            - /url: /3d-model-gallery/trionda-ball
+            - img "trionda ball" [ref=e401]
+            - generic [ref=e289]: "#trionda ball"
+            - generic [ref=e290]: Modeli görüntüle
+          - generic [ref=e402] [cursor=pointer]:
+            - generic [ref=e403]:
+              - img "brazilian soccer player wearing yellow jersey with number 10 and blue"
+            - button [ref=e291]
+            - button [ref=e293]
+            - generic [ref=e295]:
+              - paragraph [ref=e297]: Anonymous1762923576
+              - button "49" [ref=e298]:
+                - paragraph [ref=e300]: "49"
+          - generic [ref=e405] [cursor=pointer]:
+            - generic [ref=e406]:
+              - img "A highly detailed hyper realistic 3D model of a 19th Century Grand To"
+            - button [ref=e301]
+            - button [ref=e303]
+            - generic [ref=e305]:
+              - paragraph [ref=e307]: FERUL
+              - button "81" [ref=e308]:
+                - paragraph [ref=e310]: "81"
+  - region "Notifications alt+T":
+    - list

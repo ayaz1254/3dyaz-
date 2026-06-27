@@ -1,420 +1,272 @@
 "use client";
 
-import { useCallback } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { GlassCard } from "@/components/glass-card";
-import { ScrollReveal } from "@/components/scroll-reveal";
-import { motion } from "motion/react";
 
+/* ─── Types ─── */
 interface ProductData {
   id: string;
   name: string;
   slug: string;
-  description: string | null;
   price: number;
   comparePrice: number | null;
   images: string[];
   material: string | null;
   colors: string | null;
-  isPublished: boolean;
-  categoryId: string | null;
-  category: { name: string; slug: string } | null;
-  createdAt: string;
-  updatedAt: string;
+  stock: number;
 }
 
-function ProductBadges({ product }: { product: ProductData }) {
-  const hasDiscount = product.comparePrice && Number(product.comparePrice) > Number(product.price);
+type FilterKey = "all" | "stock" | "preorder";
+
+/* ─── Product Card ─── */
+function ProductCard({ product }: { product: ProductData }) {
+  const displayImages = product.images.slice(0, 2);
+  const hasDiscount =
+    product.comparePrice && Number(product.comparePrice) > Number(product.price);
   const discountPercent = hasDiscount
     ? Math.round((1 - Number(product.price) / Number(product.comparePrice)) * 100)
     : 0;
 
-  const isNew = Date.now() - new Date(product.createdAt).getTime() < 30 * 24 * 60 * 60 * 1000;
-
   return (
-    <div className="pointer-events-none absolute left-3 top-3 z-10 flex flex-col gap-2">
-      {isNew && (
-        <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg shadow-cyan-500/20">
-          <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Yeni
-        </span>
-      )}
-      {hasDiscount && (
-        <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-red-500 to-rose-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg shadow-red-500/20">
-          %{discountPercent} İndirim
-        </span>
-      )}
+    <div className="group relative bg-[#181a1b] border border-white/5 rounded-2xl overflow-hidden hover:border-[#05cc47]/50 hover:shadow-[0_0_25px_rgba(5,204,71,0.12)] transition-all duration-300">
+      <Link
+        href={`/magaza/${product.slug}`}
+        className="absolute inset-0 z-30"
+        aria-label={`${product.name} detaylarını gör`}
+      />
+      <div className="aspect-[3/4] bg-black relative overflow-hidden">
+        <div className="absolute inset-0 z-10 bg-transparent" />
+        {displayImages.length > 0 ? (
+          <>
+            <img
+              alt={`${product.name} 3D Figür - Ön Görünüm`}
+              loading="lazy"
+              width={300}
+              height={400}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pointer-events-none"
+              draggable={false}
+              src={displayImages[0]}
+            />
+            {displayImages[1] && (
+              <img
+                alt={`${product.name} 3D Figür - Detay Görünüm`}
+                loading="lazy"
+                width={300}
+                height={400}
+                className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none"
+                draggable={false}
+                src={displayImages[1]}
+              />
+            )}
+          </>
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <svg className="h-10 w-10 text-white/10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+        )}
+
+        {/* Badges */}
+        <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
+          <div className="px-2 py-1 bg-[#05cc47] text-black text-[7px] md:text-[8px] font-black uppercase tracking-wider rounded-md shadow-lg flex items-center gap-1">
+            🚚 Ücretsiz Kargo
+          </div>
+          {hasDiscount && (
+            <div className="px-2 py-1 bg-orange-500 text-white text-[7px] md:text-[8px] font-black uppercase tracking-wider rounded-md shadow-lg flex items-center gap-1 animate-pulse">
+              🔥 %{discountPercent} İndirim
+            </div>
+          )}
+        </div>
+
+        {/* Gradient overlay on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+        {/* "İncele" button on hover (desktop only) */}
+        <div className="hidden md:block absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 delay-75">
+          <button className="w-full py-2.5 bg-[#05cc47] text-black font-black uppercase tracking-widest text-[9px] rounded-lg hover:bg-white transition-colors flex items-center justify-center gap-1.5">
+            İncele
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-3 md:p-4">
+        <h3 className="text-sm md:text-base font-bold font-heading text-white mb-1.5 leading-tight group-hover:text-[#05cc47] transition-colors line-clamp-1">
+          {product.name}
+        </h3>
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col">
+            {hasDiscount ? (
+              <>
+                <span className="text-[8px] md:text-[9px] text-white/40 uppercase tracking-wider font-bold">
+                  <span className="line-through opacity-50 mr-1">{Number(product.comparePrice).toLocaleString("tr")} TL</span>
+                </span>
+                <span className="text-[#05cc47] font-mono font-bold text-sm md:text-base">
+                  {Number(product.price).toLocaleString("tr")} TL
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-[8px] md:text-[9px] text-white/40 uppercase tracking-wider font-bold">
+                  BAŞLANGIÇ
+                </span>
+                <span className="text-[#05cc47] font-mono font-bold text-sm md:text-base">
+                  {Number(product.price).toLocaleString("tr")} TL
+                </span>
+              </>
+            )}
+          </div>
+          {product.colors || product.material ? (
+            <span className="hidden sm:inline-block px-1.5 py-0.5 rounded bg-white/5 text-[7px] md:text-[8px] text-white/50 font-bold uppercase tracking-wider">
+              +SEÇENEKLİ
+            </span>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }
 
-interface CategoryData {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-}
+/* ─── Marquee Ticker ─── */
+const tickerItems = [
+  { text: "Keyifle sizler için üretiyoruz!", dot: "#ff4d00" },
+  { text: "Listelenen figürler haricinde özel istekleriniz için iletişime geçebilirsiniz.", dot: "#05cc47" },
+  { text: "Ürünlerimiz sipariş üzerine ve el yapımı olarak üretildiği için bazı farklılıklar oluşabilir.", dot: "#ef4444" },
+];
 
-interface Props {
-  products: ProductData[];
-  categories: CategoryData[];
-  materials: string[];
-  total: number;
-  totalPages: number;
-  currentPage: number;
-  currentSort: string;
-  currentCategory: string | undefined;
-  currentSearch: string | undefined;
-  currentMinPrice: string | undefined;
-  currentMaxPrice: string | undefined;
-  currentMaterial: string | undefined;
-}
+/* ─── Page ─── */
+const filters: { key: FilterKey; label: string; icon?: string }[] = [
+  { key: "all", label: "Tüm Figürler" },
+  { key: "stock", label: "Stoktakiler", icon: "📦" },
+  { key: "preorder", label: "Ön Siparişler", icon: "🔥" },
+];
 
-function buildUrl(params: Record<string, string>): string {
-  const qs = new URLSearchParams(params).toString();
-  return qs ? `/urunler?${qs}` : "/urunler";
-}
+export function ProductsPageClient({ products }: { products: ProductData[] }) {
+  const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
 
-export function ProductsPageClient({
-  products,
-  categories,
-  materials,
-  total,
-  totalPages,
-  currentPage,
-  currentSort,
-  currentCategory,
-  currentSearch,
-  currentMinPrice,
-  currentMaxPrice,
-  currentMaterial,
-}: Props) {
-  const router = useRouter();
-
-  const currentParams = (): Record<string, string> => {
-    const params: Record<string, string> = {};
-    if (currentSearch) params.q = currentSearch;
-    if (currentCategory) params.category = currentCategory;
-    if (currentMinPrice) params.minPrice = currentMinPrice;
-    if (currentMaxPrice) params.maxPrice = currentMaxPrice;
-    if (currentSort !== "newest") params.sort = currentSort;
-    if (currentMaterial) params.material = currentMaterial;
-    if (currentPage > 1) params.page = String(currentPage);
-    return params;
-  };
-
-  const linkUrl = useCallback(
-    (extra: Record<string, string>): string => {
-      return buildUrl({ ...currentParams(), ...extra });
-    },
-    [currentSearch, currentCategory, currentMinPrice, currentMaxPrice, currentSort, currentMaterial, currentPage]
-  );
+  const filteredProducts = useMemo(() => {
+    switch (activeFilter) {
+      case "stock":
+        return products.filter((p) => p.stock > 0);
+      case "preorder":
+        return products.filter((p) => p.stock <= 0);
+      default:
+        return products;
+    }
+  }, [products, activeFilter]);
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-12">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.21, 0.47, 0.32, 0.98] }}
-        className="mb-10"
-      >
-        <h1 className="text-4xl font-bold text-white">Ürünler</h1>
-        <p className="mt-2 text-gray-400">
-          3D baskı teknolojisiyle üretilmiş özel tasarım ürünleri keşfedin
-        </p>
-      </motion.div>
-
-      <div className="flex flex-col gap-8 lg:flex-row">
-        {/* ── Filters Sidebar ── */}
-        <aside className="w-full shrink-0 lg:w-60">
-          <div className="sticky top-24 space-y-4">
-            {/* Categories */}
-            <GlassCard glowColor="rgba(56, 189, 248, 0.06)">
-              <div className="p-4">
-                <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400">
-                  Kategoriler
-                </h3>
-                <div className="space-y-1.5">
-                  <Link
-                    href="/urunler"
-                    className={`block rounded-lg px-3 py-2 text-sm transition ${
-                      !currentCategory
-                        ? "bg-cyan-500/10 font-medium text-cyan-400"
-                        : "text-gray-400 hover:bg-white/5 hover:text-white"
-                    }`}
-                  >
-                    Tümü
-                  </Link>
-                  {categories.map((cat) => (
-                    <Link
-                      key={cat.id}
-                      href={linkUrl({ category: cat.slug, page: "1" })}
-                      className={`block rounded-lg px-3 py-2 text-sm transition ${
-                        currentCategory === cat.slug
-                          ? "bg-cyan-500/10 font-medium text-cyan-400"
-                          : "text-gray-400 hover:bg-white/5 hover:text-white"
-                      }`}
-                    >
-                      {cat.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </GlassCard>
-
-            {/* Materials */}
-            {materials.length > 0 && (
-              <GlassCard glowColor="rgba(45, 212, 191, 0.06)">
-                <div className="p-4">
-                  <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400">
-                    Malzeme
-                  </h3>
-                  <div className="space-y-1.5">
-                    <Link
-                      href={linkUrl({ material: "", page: "1" })}
-                      className={`block rounded-lg px-3 py-2 text-sm transition ${
-                        !currentMaterial
-                          ? "bg-teal-500/10 font-medium text-teal-400"
-                          : "text-gray-400 hover:bg-white/5 hover:text-white"
-                      }`}
-                    >
-                      Tümü
-                    </Link>
-                    {materials.map((m) => (
-                      <Link
-                        key={m}
-                        href={linkUrl({ material: m, page: "1" })}
-                        className={`block rounded-lg px-3 py-2 text-sm transition ${
-                          currentMaterial === m
-                            ? "bg-teal-500/10 font-medium text-teal-400"
-                            : "text-gray-400 hover:bg-white/5 hover:text-white"
-                        }`}
-                      >
-                        {m}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </GlassCard>
-            )}
-
-            {/* Price Range */}
-            <GlassCard glowColor="rgba(56, 189, 248, 0.06)">
-              <div className="p-4">
-                <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400">
-                  Fiyat Aralığı
-                </h3>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = e.currentTarget;
-                    const min = ((form.elements.namedItem("minPrice") as HTMLInputElement | null)?.value) ?? "";
-                    const max = ((form.elements.namedItem("maxPrice") as HTMLInputElement | null)?.value) ?? "";
-                    const params: Record<string, string> = { ...currentParams(), page: "1" };
-                    if (min) params.minPrice = min;
-                    else delete params.minPrice;
-                    if (max) params.maxPrice = max;
-                    else delete params.maxPrice;
-                    router.push(buildUrl(params));
-                  }}
-                >
-                  <div className="flex items-center gap-2">
-                    <input
-                      name="minPrice"
-                      type="number"
-                      min="0"
-                      defaultValue={currentMinPrice || ""}
-                      placeholder="Min"
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 outline-none transition focus:border-cyan-500/50"
-                    />
-                    <span className="text-xs text-gray-500">-</span>
-                    <input
-                      name="maxPrice"
-                      type="number"
-                      min="0"
-                      defaultValue={currentMaxPrice || ""}
-                      placeholder="Maks"
-                      className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 outline-none transition focus:border-cyan-500/50"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="mt-3 w-full rounded-lg bg-gradient-to-r from-cyan-500/20 to-blue-600/20 px-3 py-2 text-xs font-medium text-cyan-300 transition hover:from-cyan-500/30 hover:to-blue-600/30"
-                  >
-                    Filtrele
-                  </button>
-                </form>
-              </div>
-            </GlassCard>
+    <div className="min-h-screen bg-[#0d0e10] text-white font-inter selection:bg-[#05cc47] selection:text-black overflow-x-hidden pt-16 md:pt-20">
+      {/* ─── Hero ─── */}
+      <div className="relative min-h-[45vh] md:min-h-[50vh] flex items-center justify-center pt-24 md:pt-32 pb-12">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#05cc47]/10 to-[#0d0e10]" />
+        <div className="relative z-10 text-center space-y-3 px-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#05cc47]/10 text-[#05cc47] border border-[#05cc47]/20 backdrop-blur-md">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M16 10a4 4 0 0 1-8 0" />
+              <path d="M3.103 6.034h17.794" />
+              <path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z" />
+            </svg>
+            <span className="text-[9px] font-black uppercase tracking-widest">ONLINE MAĞAZA (BETA)</span>
           </div>
-        </aside>
+          <h1 className="text-3xl md:text-5xl font-black font-heading tracking-tighter">
+            ÖZEL <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#05cc47] to-[#028a2f]">KOLEKSİYON</span>
+          </h1>
+          <p className="text-white/50 max-w-md mx-auto text-xs leading-relaxed hidden md:block">
+            Stoktan hemen teslim veya kişiye özel üretim figürler.
+          </p>
 
-        {/* ── Products ── */}
-        <div className="flex-1">
-          {/* Search + Sort */}
-          <div className="mb-8 flex items-center gap-3">
-            <form
-              className="flex flex-1 gap-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.currentTarget;
-                const q = ((form.elements.namedItem("q") as HTMLInputElement | null)?.value) ?? "";
-                const params: Record<string, string> = { ...currentParams(), page: "1" };
-                if (q) params.q = q;
-                else delete params.q;
-                router.push(buildUrl(params));
-              }}
-            >
-              <div className="relative flex-1">
-                <svg
-                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  name="q"
-                  defaultValue={currentSearch || ""}
-                  placeholder="Ürün ara..."
-                  className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm text-white placeholder-gray-500 outline-none transition focus:border-cyan-500/50"
-                />
+          {/* ─── Marquee Ticker ─── */}
+          <div className="relative mt-12 max-w-[1200px] mx-auto overflow-hidden pointer-events-none">
+            <div className="absolute inset-y-0 left-0 w-12 md:w-32 bg-gradient-to-r from-[#0d0e10] via-[#0d0e10]/80 to-transparent z-10" />
+            <div className="absolute inset-y-0 right-0 w-12 md:w-32 bg-gradient-to-l from-[#0d0e10] via-[#0d0e10]/80 to-transparent z-10" />
+            <div className="w-full py-6 px-0 md:px-10 flex items-center bg-white/[0.01] border-y border-white/5 backdrop-blur-md overflow-hidden">
+              <div className="flex items-center py-2 marquee-track">
+                {[...Array(4)].flatMap((_, loop) =>
+                  tickerItems.map((item, i) => (
+                    <div
+                      key={`${loop}-${i}`}
+                      className="flex items-center gap-4 md:gap-8 pr-16 md:pr-40 justify-center min-w-[300px] md:min-w-0 shrink-0"
+                    >
+                      <div className="shrink-0 w-2.5 h-2.5 rounded-full shadow-[0_0_12px_currentColor]" style={{ backgroundColor: item.dot, color: item.dot }} />
+                      <p className="text-[12px] font-bold tracking-[0.2em] text-white/70 uppercase leading-relaxed text-center w-full whitespace-nowrap">
+                        {item.text}
+                      </p>
+                    </div>
+                  ))
+                )}
               </div>
-              <button
-                type="submit"
-                className="rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-cyan-500/20 transition hover:shadow-cyan-500/40"
-              >
-                Ara
-              </button>
-            </form>
-
-            <select
-              value={currentSort}
-              onChange={(e) => {
-                router.push(linkUrl({ sort: e.target.value, page: "1" }));
-              }}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white outline-none transition focus:border-cyan-500/50"
-            >
-              <option value="newest" className="bg-gray-900">En Yeni</option>
-              <option value="price-asc" className="bg-gray-900">Artan Fiyat</option>
-              <option value="price-desc" className="bg-gray-900">Azalan Fiyat</option>
-            </select>
+            </div>
           </div>
-
-          {products.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl border border-white/5 bg-white/[0.02] px-8 py-24 text-center backdrop-blur-sm"
-            >
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-cyan-500/10">
-                <svg className="h-8 w-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-lg font-medium text-gray-300">Ürün bulunamadı</h3>
-              <p className="mb-4 text-sm text-gray-500">Filtreleri değiştirerek tekrar deneyin.</p>
-              <Link
-                href="/urunler"
-                className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-cyan-500/20"
-              >
-                Filtreleri Temizle
-              </Link>
-            </motion.div>
-          ) : (
-            <>
-              <p className="mb-6 text-sm text-gray-500">{total} ürün bulundu</p>
-
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {products.map((product, i) => (
-                  <ScrollReveal key={product.id} delay={i * 0.05} direction="up">
-                    <Link href={`/urunler/${product.slug}`} className="group block">
-                      <GlassCard glowColor="rgba(56, 189, 248, 0.08)" hover3d>
-                        <div className="relative aspect-square overflow-hidden rounded-xl bg-gray-800/50">
-                          <ProductBadges product={product} />
-                          {product.images[0] ? (
-                            <img
-                              src={product.images[0]}
-                              alt={product.name}
-                              className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-                            />
-                          ) : (
-                            <div className="flex h-full items-center justify-center">
-                              <div className="flex flex-col items-center gap-2 text-gray-600">
-                                <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span className="text-xs">Görsel Yok</span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        <div className="mt-4 space-y-1">
-                          {product.category && (
-                            <p className="text-xs font-medium text-cyan-400">{product.category.name}</p>
-                          )}
-                          <h3 className="font-semibold text-white transition-colors group-hover:text-cyan-300">
-                            {product.name}
-                          </h3>
-                          <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-400">
-                            {Number(product.price).toFixed(2)} ₺
-                          </p>
-                        </div>
-                      </GlassCard>
-                    </Link>
-                  </ScrollReveal>
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mt-12 flex items-center justify-center gap-2"
-                >
-                  {currentPage > 1 && (
-                    <Link
-                      href={linkUrl({ page: String(currentPage - 1) })}
-                      className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 transition hover:border-white/20 hover:text-white"
-                    >
-                      ← Önceki
-                    </Link>
-                  )}
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                      <Link
-                        key={p}
-                        href={linkUrl({ page: String(p) })}
-                        className={`flex h-9 w-9 items-center justify-center rounded-xl text-sm transition ${
-                          p === currentPage
-                            ? "bg-gradient-to-r from-cyan-500 to-blue-600 font-medium text-white shadow-lg shadow-cyan-500/20"
-                            : "border border-white/10 bg-white/5 text-gray-400 hover:border-white/20 hover:text-white"
-                        }`}
-                      >
-                        {p}
-                      </Link>
-                    ))}
-                  </div>
-                  {currentPage < totalPages && (
-                    <Link
-                      href={linkUrl({ page: String(currentPage + 1) })}
-                      className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 transition hover:border-white/20 hover:text-white"
-                    >
-                      Sonraki →
-                    </Link>
-                  )}
-                </motion.div>
-              )}
-            </>
-          )}
         </div>
       </div>
+
+      {/* ─── Product Grid ─── */}
+      <div className="mx-auto max-w-[1200px] px-4 pb-16 md:pb-20">
+        {/* ─── Filter Pills ─── */}
+        <div className="flex items-center justify-center gap-2 md:gap-3 pb-8 md:pb-10">
+          {filters.map((f) => {
+            const isActive = activeFilter === f.key;
+            return (
+              <button
+                key={f.key}
+                onClick={() => setActiveFilter(f.key)}
+                className={`px-4 py-1.5 rounded-full border text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                  isActive
+                    ? "bg-[#05cc47] text-black border-[#05cc47]"
+                    : "bg-transparent border-white/20 text-white/70 hover:border-white/50"
+                }`}
+              >
+                {f.icon && <span className="text-[10px]">{f.icon}</span>}
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {filteredProducts.length === 0 ? (
+          <div className="rounded-2xl border border-white/5 bg-[#181a1b] px-8 py-20 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#05cc47]/10">
+              <svg className="h-7 w-7 text-[#05cc47]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-base font-medium text-gray-300">Ürün bulunamadı</h3>
+            <p className="mb-4 text-sm text-gray-500">Henüz bu kategoride ürün bulunmamaktadır.</p>
+            <Link
+              href="/magaza"
+              className="inline-flex items-center gap-1 rounded-full bg-[#05cc47] px-5 py-2 text-sm font-medium text-black"
+            >
+              Tüm Ürünler
+            </Link>
+          </div>
+        ) : (
+          <>
+            {/* ─── Product Grid ─── */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* ─── Marquee Animation ─── */}
+      <style jsx>{`
+        .marquee-track {
+          animation: marquee 30s linear infinite;
+        }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
     </div>
   );
 }

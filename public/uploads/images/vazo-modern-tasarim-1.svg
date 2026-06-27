@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" width="400" height="280">
+  <defs>
+    <linearGradient id="bg-grad-vazomoderntasarim-1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#16213e"/>
+      <stop offset="100%" stop-color="#1a1a2e"/>
+    </linearGradient>
+    <filter id="glow-1">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="200" height="140" rx="12" fill="url(#bg-grad-vazomoderntasarim-1)"/>
+  
+      <path d="M70 40 Q75 35 85 35 L95 35 Q105 35 110 40 L115 60 Q118 80 115 100 L110 120 Q108 130 90 135 L80 135 Q65 130 60 120 L55 100 Q52 80 55 60 L70 40Z" fill="#4361ee" opacity="0.85"/>
+      <path d="M75 50 Q80 45 90 45 L95 45 Q100 45 102 50 L105 65 Q106 80 102 95 L98 110 Q95 118 85 120 L80 120 Q72 118 68 110 L64 95 Q60 80 62 65 L75 50Z" fill="#4895ef" opacity="0.4"/>
+      <line x1="82" y1="30" x2="82" y2="38" stroke="#4361ee" stroke-width="2" opacity="0.6"/>
+      <line x1="90" y1="28" x2="90" y2="40" stroke="#4361ee" stroke-width="2" opacity="0.6"/>
+      <line x1="98" y1="30" x2="98" y2="38" stroke="#4361ee" stroke-width="2" opacity="0.6"/>
+      
+        <path d="M40 90 Q30 85 25 90 Q20 95 25 100 Q30 105 40 100Z" fill="#4895ef" opacity="0.5"/>
+        <path d="M140 85 Q150 80 155 85 Q160 90 155 95 Q150 100 140 95Z" fill="#4895ef" opacity="0.5"/>
+      
+    
+  <!-- Subtle grid overlay -->
+  <g opacity="0.05">
+    <line x1="0" y1="0" x2="0" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="20" y1="0" x2="20" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="40" y1="0" x2="40" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="60" y1="0" x2="60" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="80" y1="0" x2="80" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="100" y1="0" x2="100" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="120" y1="0" x2="120" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="140" y1="0" x2="140" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="160" y1="0" x2="160" y2="140" stroke="#fff" stroke-width="0.5"/><line x1="180" y1="0" x2="180" y2="140" stroke="#fff" stroke-width="0.5"/>
+    <line x1="0" y1="0" x2="200" y2="0" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="20" x2="200" y2="20" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="40" x2="200" y2="40" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="60" x2="200" y2="60" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="80" x2="200" y2="80" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="100" x2="200" y2="100" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="120" x2="200" y2="120" stroke="#fff" stroke-width="0.5"/><line x1="0" y1="140" x2="200" y2="140" stroke="#fff" stroke-width="0.5"/>
+  </g>
+  <!-- Label -->
+  <text x="100" y="130" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="8" font-family="sans-serif">vazo modern tasarim</text>
+</svg>

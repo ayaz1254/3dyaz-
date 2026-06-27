@@ -211,53 +211,51 @@ export default function BlogPage() {
       <section className="relative px-4 pb-24">
         <div className="mx-auto max-w-7xl">
           {loading ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {[1, 2, 3, 4, 5, 6].map((n) => (
-                <div key={n} className="animate-pulse rounded-2xl bg-white/5 p-4">
-                  <div className="aspect-[8/5] rounded-xl bg-white/10" />
-                  <div className="mt-4 space-y-3">
-                    <div className="h-4 w-20 rounded bg-white/10" />
-                    <div className="h-5 w-full rounded bg-white/10" />
-                    <div className="h-4 w-3/4 rounded bg-white/10" />
+                <div key={n} className="animate-pulse rounded-2xl bg-white/5 p-3">
+                  <div className="aspect-[4/5] rounded-xl bg-white/10" />
+                  <div className="mt-2 space-y-2">
+                    <div className="h-3 w-20 rounded bg-white/10" />
+                    <div className="h-4 w-full rounded bg-white/10" />
+                    <div className="h-3 w-3/4 rounded bg-white/10" />
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {posts.map((post, i) => (
                 <ScrollReveal key={post.slug} delay={i * 0.08}>
                   <Link href={`/blog/${post.slug}`} className="group block h-full">
                     <GlassCard glowColor="rgba(56, 189, 248, 0.08)" hover3d>
-                      <div className="aspect-[8/5] overflow-hidden rounded-xl bg-gray-800/50">
+                      <div className="aspect-[4/5] overflow-hidden rounded-xl bg-gray-800/50">
                         <img
                           src={post.image || "/images/blog/default.svg"}
                           alt={post.title}
                           className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                         />
                       </div>
-                      <div className="mt-4 space-y-2">
-                        <div className="flex items-center gap-3">
-                          <span className="rounded-full bg-cyan-500/10 px-2.5 py-0.5 text-[11px] font-medium text-cyan-400">
-                            {post.category || "Genel"}
-                          </span>
-                        </div>
-                        <h3 className="font-semibold text-white transition-colors group-hover:text-cyan-300">
+                      <div className="mt-2.5 space-y-1">
+                        <span className="inline-block rounded-full bg-cyan-500/10 px-2.5 py-0.5 text-[11px] font-medium text-cyan-400">
+                          {post.category || "Genel"}
+                        </span>
+                        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-white transition-colors group-hover:text-cyan-300">
                           {post.title}
                         </h3>
-                        <p className="text-sm leading-relaxed text-gray-400">
+                        <p className="line-clamp-2 text-xs leading-relaxed text-gray-400">
                           {post.excerpt}
                         </p>
-                        <div className="flex items-center justify-between pt-2">
-                          <span className="text-xs text-gray-500">
+                        <div className="flex items-center justify-between pt-1">
+                          <span className="text-[11px] text-gray-500">
                             {new Date(post.createdAt).toLocaleDateString("tr-TR", {
                               day: "numeric",
                               month: "long",
                               year: "numeric",
                             })}
                           </span>
-                          <span className="text-xs font-medium text-cyan-400 transition-colors group-hover:text-cyan-300">
-                            Devamını Oku →
+                          <span className="text-[11px] font-medium text-cyan-400 transition-colors group-hover:text-cyan-300">
+                            Devamı →
                           </span>
                         </div>
                       </div>

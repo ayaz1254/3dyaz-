@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { GlassCard } from "@/components/glass-card";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { useEffect, useState } from "react";
 
 interface BlogPostDetail {
@@ -147,18 +148,10 @@ export default function BlogPostPage() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* Back link */}
-      <div className="relative z-10 mx-auto w-full max-w-4xl px-4 pt-6">
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-1 text-sm text-gray-400 transition hover:text-cyan-400"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Blog&apos;a Dön
-        </Link>
-      </div>
+      <Breadcrumbs items={[
+        { label: "Blog", href: "/blog" },
+        { label: displayTitle },
+      ]} />
 
       {/* Hero Image */}
       <section className="relative px-4 pt-6">
@@ -237,7 +230,7 @@ export default function BlogPostPage() {
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">
                   <Link
-                    href="/urunler"
+                    href="/magaza"
                     className="rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-2.5 text-sm font-medium text-white shadow-lg shadow-cyan-500/20 transition hover:shadow-cyan-500/40"
                   >
                     Ürünleri İncele

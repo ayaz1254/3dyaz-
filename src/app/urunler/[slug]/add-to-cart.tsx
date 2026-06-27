@@ -49,7 +49,7 @@ export function AddToCartButton({
   return (
     <button
       onClick={handleAdd}
-      className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-3.5 font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all hover:shadow-cyan-500/40 sm:w-auto"
+      className="group relative w-full overflow-hidden rounded-xl bg-[#05cc47] px-8 py-3.5 font-semibold text-black shadow-lg shadow-[#05cc47]/20 transition-all hover:bg-[#05cc47]/90 hover:shadow-[#05cc47]/40 sm:w-auto"
     >
       <span className="relative z-10 flex items-center justify-center gap-2">
         {added ? (
@@ -68,7 +68,7 @@ export function AddToCartButton({
           </>
         )}
       </span>
-      <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-cyan-400 to-blue-500 transition group-hover:translate-x-0" />
+      <div className="absolute inset-0 -translate-x-full bg-[#05cc47] transition group-hover:translate-x-0" />
     </button>
   );
 }

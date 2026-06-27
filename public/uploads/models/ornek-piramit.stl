@@ -1,0 +1,44 @@
+solid pyramid_sample
+  facet normal 0.0000 -0.6000 0.8000
+    outer loop
+      vertex 0.0000 20.0000 0.0000
+      vertex -15.0000 0.0000 -15.0000
+      vertex 15.0000 0.0000 -15.0000
+    endloop
+  endfacet
+  facet normal -0.8000 -0.6000 0.0000
+    outer loop
+      vertex 0.0000 20.0000 0.0000
+      vertex 15.0000 0.0000 -15.0000
+      vertex 15.0000 0.0000 15.0000
+    endloop
+  endfacet
+  facet normal 0.0000 -0.6000 -0.8000
+    outer loop
+      vertex 0.0000 20.0000 0.0000
+      vertex 15.0000 0.0000 15.0000
+      vertex -15.0000 0.0000 15.0000
+    endloop
+  endfacet
+  facet normal 0.8000 -0.6000 0.0000
+    outer loop
+      vertex 0.0000 20.0000 0.0000
+      vertex -15.0000 0.0000 15.0000
+      vertex -15.0000 0.0000 -15.0000
+    endloop
+  endfacet
+  facet normal 0.0000 1.0000 0.0000
+    outer loop
+      vertex -15.0000 0.0000 -15.0000
+      vertex 15.0000 0.0000 15.0000
+      vertex 15.0000 0.0000 -15.0000
+    endloop
+  endfacet
+  facet normal 0.0000 1.0000 0.0000
+    outer loop
+      vertex -15.0000 0.0000 -15.0000
+      vertex -15.0000 0.0000 15.0000
+      vertex 15.0000 0.0000 15.0000
+    endloop
+  endfacet
+endsolid pyramid_sample

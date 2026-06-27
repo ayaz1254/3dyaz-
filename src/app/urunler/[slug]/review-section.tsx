@@ -83,7 +83,7 @@ export function ReviewSection({ productId }: { productId: string }) {
               <div className="p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-600/20 text-xs font-medium text-cyan-300">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#05cc47]/20 text-xs font-medium text-[#05cc47]">
                       {(review.user.name || "A")[0].toUpperCase()}
                     </div>
                     <span className="text-sm font-medium text-gray-200">
@@ -106,7 +106,7 @@ export function ReviewSection({ productId }: { productId: string }) {
 
       {/* Review form */}
       {session?.user ? (
-        <GlassCard glowColor="rgba(56, 189, 248, 0.06)">
+        <GlassCard glowColor="rgba(5, 204, 71, 0.06)">
           <form onSubmit={handleSubmit} className="p-5">
             <h3 className="mb-4 font-semibold text-white">Yorum Yap</h3>
 
@@ -131,7 +131,7 @@ export function ReviewSection({ productId }: { productId: string }) {
               placeholder="Yorumunuz (isteğe bağlı)"
               rows={3}
               maxLength={1000}
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition focus:border-cyan-500/50"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-gray-500 outline-none transition focus:border-[#05cc47]/50"
             />
 
             {message && (
@@ -147,7 +147,7 @@ export function ReviewSection({ productId }: { productId: string }) {
             <button
               type="submit"
               disabled={loading}
-              className="mt-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-2.5 text-sm font-medium text-white shadow-lg shadow-cyan-500/20 transition hover:shadow-cyan-500/40 disabled:opacity-50"
+              className="mt-4 rounded-xl bg-[#05cc47] px-8 py-2.5 text-sm font-medium text-black shadow-lg shadow-[#05cc47]/20 transition hover:bg-[#05cc47]/90 hover:shadow-[#05cc47]/40 disabled:opacity-50"
             >
               {loading ? "Gönderiliyor..." : "Gönder"}
             </button>

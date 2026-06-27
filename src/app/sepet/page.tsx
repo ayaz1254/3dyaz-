@@ -51,7 +51,7 @@ export default function CartPage() {
           <h3 className="mb-2 text-lg font-medium text-gray-300">Sepetiniz boş</h3>
           <p className="mb-6 text-sm text-gray-500">Alışverişe başlamak için ürünleri keşfedin.</p>
           <Link
-            href="/urunler"
+            href="/magaza"
             className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-3 font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all hover:shadow-cyan-500/40"
           >
             <span className="relative z-10">Alışverişe Başla</span>
@@ -85,7 +85,7 @@ export default function CartPage() {
 
                   <div className="min-w-0 flex-1">
                     <Link
-                      href={`/urunler/${item.slug}`}
+                      href={`/magaza/${item.slug}`}
                       className="font-medium text-white transition hover:text-cyan-300"
                     >
                       {item.name}
@@ -179,7 +179,7 @@ export default function CartPage() {
                   <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-cyan-400 to-blue-500 transition group-hover:translate-x-0" />
                 </Link>
                 <Link
-                  href="/urunler"
+                  href="/magaza"
                   className="flex items-center justify-center gap-1 rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-medium text-gray-300 transition hover:border-white/20 hover:text-white"
                 >
                   Alışverişe Devam Et
