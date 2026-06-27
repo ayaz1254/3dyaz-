@@ -1,6 +1,8 @@
-const CACHE = "3dmagza-v1";
+const CACHE = "3dmagza-v2";
 const CACHEABLE = [
   "/",
+  "/magaza",
+  "/magaza/",
   "/urunler",
   "/blog",
   "/ozel-figur",
